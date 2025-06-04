@@ -20,7 +20,7 @@ const NavItems = () => {
         <Link
           href={href}
           key={label}
-          className={cn("text-white text-[16px] px-1 hover:text-gray-100", pathname === href && "font-semibold")}
+          className={cn("text-white text-[17px] px-1 hover:text-zinc-100 transition-colors", pathname === href && "font-semibold")}
         >
           {label}
         </Link>

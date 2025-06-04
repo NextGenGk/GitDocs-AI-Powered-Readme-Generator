@@ -11,7 +11,7 @@ const Navbar = () => {
                 <Link href="/">
                     <div className="flex items-center justify-center gap-2.5 cursor-pointer">
                         {/*<Image src="/images/logo.svg" alt="Logo" width={46} height={44} />*/}
-                        <div className="text-3xl font-semibold text-white">
+                        <div className="text-3xl font-semibold text-white hover:text-zinc-100 transition-colors">
                             GitDocs.
                         </div>
                     </div>
