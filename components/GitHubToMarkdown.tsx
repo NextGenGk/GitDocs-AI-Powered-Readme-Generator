@@ -1,6 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import {Input} from "@/components/ui/input"
+import {Button} from "@/components/ui/button"
+import {Textarea} from "@/components/ui/textarea"
+
+import {useRef, useState} from 'react';
 
 export default function GitHubToMarkdown() {
   const [githubUrl, setGithubUrl] = useState('');
@@ -69,21 +73,19 @@ export default function GitHubToMarkdown() {
       
       <form onSubmit={handleSubmit} className="mb-6">
         <div className="flex flex-col sm:flex-row gap-4">
-          <input
-            type="text"
-            value={githubUrl}
-            onChange={(e) => setGithubUrl(e.target.value)}
-            placeholder="Enter GitHub repository URL"
-            className="flex-grow p-2 border border-gray-300 rounded"
-            required
+          <Input type="text"
+                 value={githubUrl}
+                 onChange={(e) => setGithubUrl(e.target.value)}
+                 placeholder="Enter GitHub repository URL"
+                 className="flex-grow p-2 border border-gray-300 rounded"
+                 required
           />
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-400"
-          >
+          <Button type="submit"
+                  disabled={isLoading}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-400">
             {isLoading ? 'Generating...' : 'Generate README'}
-          </button>
+          </Button>
+
         </div>
       </form>
 
@@ -93,22 +95,19 @@ export default function GitHubToMarkdown() {
         <div className="mt-6">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-xl font-semibold">Generated README.md</h2>
-            <button
-              onClick={handleDownload}
-              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-            >
+
+            <Button onClick={handleDownload}
+                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
               Download README.md
-            </button>
+            </Button>
           </div>
-          
-          <textarea
-            ref={textareaRef}
-            value={markdown}
-            onChange={handleTextareaChange}
-            onInput={adjustTextareaHeight}
-            className="w-full p-4 border border-gray-300 rounded font-mono min-h-[300px]"
-            style={{ resize: 'vertical' }}
-          />
+
+          <Textarea ref={textareaRef}
+                    value={markdown}
+                    onChange={handleTextareaChange}
+                    onInput={adjustTextareaHeight}
+                    className="w-full p-4 border border-gray-300 rounded font-mono min-h-[300px]"
+                    style={{resize: 'vertical'}} />
         </div>
       )}
     </div>
