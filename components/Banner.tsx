@@ -19,11 +19,11 @@ export default function Banner() {
 
             <div className="absolute inset-0 flex flex-col items-center justify-center w-full pt-32">
                 <h1 className="text-5xl font-semibold mb-4 text-slate-950">Your Code Deserves a Better {''}
-                    <span style={{ color: '#', fontWeight: 'bold' }}>
+                    <span style={{ color: 'white', fontWeight: 'bold' }}>
                     {/* Style will be inherited from the parent element */}
                         <Typewriter
                             words={['README.', 'Readability', 'Documentation']}
-                            loop={5}
+                            loop={10}
                             cursor
                             cursorStyle='_'
                             typeSpeed={70}
