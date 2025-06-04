@@ -1,5 +1,5 @@
-import GitHubToMarkdown from './components/GitHubToMarkdown';
-import Banner from './components/Banner';
+import GitHubToMarkdown from "@/components/GitHubToMarkdown";
+import Banner from "@/components/Banner";
 
 export default function Home() {
   return (
