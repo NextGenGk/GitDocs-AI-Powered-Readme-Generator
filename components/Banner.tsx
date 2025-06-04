@@ -1,5 +1,8 @@
+'use client';
+
 import Image from "next/image";
 import GitHubToMarkdown from "./GitHubToMarkdown";
+import {Typewriter} from "react-simple-typewriter";
 
 export default function Banner() {
     return (
@@ -10,12 +13,25 @@ export default function Banner() {
                 width={0}
                 height={0}
                 sizes="100vw"
-                style={{ width: '100%', height: '100%', opacity: 0.85, objectFit: 'cover', position: 'absolute', zIndex: -1 }}
+                style={{ width: '100%', height: '100%', opacity: 0.80, objectFit: 'cover', position: 'absolute', zIndex: -1 }}
             />
 
 
             <div className="absolute inset-0 flex flex-col items-center justify-center w-full pt-32">
-                <h1 className="text-5xl font-semibold mb-4 text-slate-950">Your Code Deserves a Better README.</h1>
+                <h1 className="text-5xl font-semibold mb-4 text-slate-950">Your Code Deserves a Better {''}
+                    <span style={{ color: '#', fontWeight: 'bold' }}>
+                    {/* Style will be inherited from the parent element */}
+                        <Typewriter
+                            words={['README.', 'Readability', 'Documentation']}
+                            loop={5}
+                            cursor
+                            cursorStyle='_'
+                            typeSpeed={70}
+                            deleteSpeed={50}
+                            delaySpeed={1000}
+                        />
+                    </span>
+                </h1>
                 <p className="text-lg mb-4 text-center max-w-2xl text-slate-950">
                     One Link. One Click. One Perfect README.
                 </p>
