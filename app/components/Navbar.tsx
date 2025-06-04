@@ -6,7 +6,7 @@ import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from "@cl
 
 const Navbar = () => {
     return (
-        <nav className="navbar flex justify-between items-center p-4">
+        <nav className="navbar flex justify-between items-center p-4 bg-transparent absolute top-0 left-0 right-0 z-10">
             <div className="flex-shrink-0">
                 <Link href="/">
                     <div className="flex items-center justify-center gap-2.5 cursor-pointer">
@@ -21,7 +21,7 @@ const Navbar = () => {
                 <NavItems />
                 <SignedOut>
                     <SignInButton>
-                        <button className="border border-black rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer">Sign In</button>
+                        <button className="border border-white text-white hover:bg-white hover:text-black transition-colors rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer">Sign In</button>
                     </SignInButton>
                 </SignedOut>
                 <SignedIn>
