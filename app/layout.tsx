@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "GitDocs - AI-Powered README Generator",
   description: "Generate comprehensive README.md files for your GitHub repositories using AI",
+  viewport: "width=device-width, initial-scale=1.0",
 };
 
 export default function RootLayout({

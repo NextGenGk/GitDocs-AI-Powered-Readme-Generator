@@ -99,10 +99,10 @@ export default function GitHubToMarkdown() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full mx-auto">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mb-4 mt-2">
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3">
             <FormField
               control={form.control}
               name="githubUrl"
@@ -111,18 +111,18 @@ export default function GitHubToMarkdown() {
                   <FormControl>
                     <Input 
                       placeholder="Enter GitHub repository URL" 
-                      className="p-2 border border-gray-400 rounded-lg text-gray-950 h-10"
+                      className="p-2 border border-gray-400 rounded-lg text-gray-950 h-10 text-sm sm:text-base"
                       {...field} 
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs sm:text-sm" />
                 </FormItem>
               )}
             />
             <Button 
               type="submit"
               disabled={isLoading}
-              className="bg-slate-800 text-white px-4 rounded-lg hover:bg-slate-700 disabled:bg-blue-400 h-10"
+              className="bg-slate-800 text-white px-3 sm:px-4 rounded-lg hover:bg-slate-700 disabled:bg-blue-400 h-10 text-sm sm:text-base whitespace-nowrap"
             >
               {isLoading ? 'Generating...' : 'Generate README'}
             </Button>
@@ -130,16 +130,16 @@ export default function GitHubToMarkdown() {
         </form>
       </Form>
 
-      {error && <div className="text-red-600 mb-4">{error}</div>}
+      {error && <div className="text-red-600 mb-4 text-sm sm:text-base">{error}</div>}
 
       {markdown && (
         <div className="mt-6">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-xl font-semibold">Generated README.md</h2>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-2 gap-3 sm:gap-0">
+            <h2 className="text-lg sm:text-xl font-semibold">Generated README.md</h2>
 
             <Button 
               onClick={handleDownload}
-              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm sm:text-base w-full sm:w-auto"
             >
               Download README.md
             </Button>
@@ -150,7 +150,7 @@ export default function GitHubToMarkdown() {
             value={markdown}
             onChange={handleTextareaChange}
             onInput={adjustTextareaHeight}
-            className="w-full p-4 border border-gray-300 rounded font-mono min-h-[300px]"
+            className="w-full p-2 sm:p-4 border border-gray-300 rounded font-mono min-h-[200px] sm:min-h-[300px] text-sm sm:text-base"
             style={{resize: 'vertical'}} 
           />
         </div>

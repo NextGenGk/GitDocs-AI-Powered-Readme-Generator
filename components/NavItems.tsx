@@ -11,16 +11,31 @@ const navItems = [
   { label: "FAQ's", href: "/faqs" },
 ];
 
-const NavItems = () => {
+interface NavItemsProps {
+  isMobile?: boolean;
+}
+
+const NavItems = ({ isMobile = false }: NavItemsProps) => {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-4">
+    <nav className={cn(
+      isMobile 
+        ? "flex flex-col gap-4" 
+        : "flex items-center gap-4"
+    )}>
       {navItems.map(({ label, href }) => (
         <Link
           href={href}
           key={label}
-          className={cn("text-white text-[17px] px-1 hover:text-zinc-100 transition-colors", pathname === href && "font-semibold")}
+          className={cn(
+            "text-white hover:text-zinc-100 transition-colors", 
+            isMobile 
+              ? "text-lg py-2" 
+              : "text-[15px] sm:text-[17px] px-1",
+            pathname === href && "font-semibold"
+          )}
+          onClick={isMobile ? () => document.body.click() : undefined}
         >
           {label}
         </Link>
