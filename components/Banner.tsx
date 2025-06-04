@@ -15,6 +15,7 @@ export default function Banner() {
                 sizes="100vw"
                 style={{ width: '100%', height: '100%', opacity: 0.80, objectFit: 'cover', position: 'absolute', zIndex: -1 }}
             />
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10" style={{ zIndex: -1 }}></div>
 
 
             <div className="absolute inset-0 flex flex-col items-center justify-center w-full pt-32">
