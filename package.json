@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.20.2",
     "@tabler/icons-react": "^3.34.0",
     "clsx": "^2.1.1",
     "cobe": "^0.6.4",
