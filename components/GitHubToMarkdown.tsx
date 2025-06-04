@@ -100,10 +100,8 @@ export default function GitHubToMarkdown() {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">GitHub to README.md Converter</h1>
-
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-4 mt-2">
           <div className="flex flex-col sm:flex-row gap-4">
             <FormField
               control={form.control}
@@ -113,7 +111,7 @@ export default function GitHubToMarkdown() {
                   <FormControl>
                     <Input 
                       placeholder="Enter GitHub repository URL" 
-                      className="p-2 border border-gray-300 rounded"
+                      className="p-2 border border-gray-400 rounded-lg text-gray-950 h-10"
                       {...field} 
                     />
                   </FormControl>
@@ -124,7 +122,7 @@ export default function GitHubToMarkdown() {
             <Button 
               type="submit"
               disabled={isLoading}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-400"
+              className="bg-slate-800 text-white px-4 rounded-lg hover:bg-slate-700 disabled:bg-blue-400 h-10"
             >
               {isLoading ? 'Generating...' : 'Generate README'}
             </Button>
