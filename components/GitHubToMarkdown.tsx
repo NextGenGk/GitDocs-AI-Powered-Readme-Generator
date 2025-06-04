@@ -1,20 +1,51 @@
 'use client';
 
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {Textarea} from "@/components/ui/textarea"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import {useRef, useState} from 'react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+import { useRef, useState } from 'react';
+
+// Define the form schema with Zod
+const formSchema = z.object({
+  githubUrl: z.string()
+    .url("Please enter a valid URL")
+    .refine(
+      (url) => url.startsWith("https://github.com/") || url.startsWith("http://github.com/"),
+      { message: "URL must be a GitHub repository link" }
+    )
+});
+
+// Define the form values type
+type FormValues = z.infer<typeof formSchema>;
 
 export default function GitHubToMarkdown() {
-  const [githubUrl, setGithubUrl] = useState('');
   const [markdown, setMarkdown] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Initialize the form
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      githubUrl: "",
+    },
+  });
+
+  const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     setError('');
 
@@ -24,7 +55,7 @@ export default function GitHubToMarkdown() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ githubUrl }),
+        body: JSON.stringify({ githubUrl: values.githubUrl }),
       });
 
       const data = await response.json();
@@ -70,24 +101,36 @@ export default function GitHubToMarkdown() {
   return (
     <div className="w-full max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">GitHub to README.md Converter</h1>
-      
-      <form onSubmit={handleSubmit} className="mb-6">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Input type="text"
-                 value={githubUrl}
-                 onChange={(e) => setGithubUrl(e.target.value)}
-                 placeholder="Enter GitHub repository URL"
-                 className="flex-grow p-2 border border-gray-300 rounded"
-                 required
-          />
-          <Button type="submit"
-                  disabled={isLoading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-400">
-            {isLoading ? 'Generating...' : 'Generate README'}
-          </Button>
 
-        </div>
-      </form>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <FormField
+              control={form.control}
+              name="githubUrl"
+              render={({ field }) => (
+                <FormItem className="flex-grow">
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter GitHub repository URL" 
+                      className="p-2 border border-gray-300 rounded"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button 
+              type="submit"
+              disabled={isLoading}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-400"
+            >
+              {isLoading ? 'Generating...' : 'Generate README'}
+            </Button>
+          </div>
+        </form>
+      </Form>
 
       {error && <div className="text-red-600 mb-4">{error}</div>}
 
@@ -96,18 +139,22 @@ export default function GitHubToMarkdown() {
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-xl font-semibold">Generated README.md</h2>
 
-            <Button onClick={handleDownload}
-                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
+            <Button 
+              onClick={handleDownload}
+              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+            >
               Download README.md
             </Button>
           </div>
 
-          <Textarea ref={textareaRef}
-                    value={markdown}
-                    onChange={handleTextareaChange}
-                    onInput={adjustTextareaHeight}
-                    className="w-full p-4 border border-gray-300 rounded font-mono min-h-[300px]"
-                    style={{resize: 'vertical'}} />
+          <Textarea 
+            ref={textareaRef}
+            value={markdown}
+            onChange={handleTextareaChange}
+            onInput={adjustTextareaHeight}
+            className="w-full p-4 border border-gray-300 rounded font-mono min-h-[300px]"
+            style={{resize: 'vertical'}} 
+          />
         </div>
       )}
     </div>
