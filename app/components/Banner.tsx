@@ -9,7 +9,8 @@ export default function () {
                 width={0}
                 height={0}
                 sizes="100vw"
-                style={{ width: '100%', height: '100vh', opacity: 0.80, objectFit: 'cover' }}
+                z-index={-1}
+                style={{ width: '100%', height: '100vh', opacity: 0.80, objectFit: 'cover'}}
             />
         </div>
     )
