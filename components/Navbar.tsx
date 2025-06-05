@@ -14,10 +14,10 @@ const Navbar = () => {
             <div className="flex-shrink-0">
                 <Link href="/">
                     <div className="flex items-center justify-center gap-2.5 cursor-pointer">
-                        {/*<Image src="/images/logo.svg" alt="Logo" width={46} height={44} />*/}
-                        <div className="text-2xl sm:text-3xl font-semibold text-white hover:text-zinc-100 transition-colors">
-                            GitDocs.
-                        </div>
+                        <Image src="/logo.png" alt="Logo" width={38} height={36} />
+                        <span className="text-2xl sm:text-3xl font-semibold text-white hover:text-zinc-100 transition-colors">
+                            GitDocs <span className="text-4xl text-white font-semibold"> . </span>
+                        </span>
                     </div>
                 </Link>
             </div>
