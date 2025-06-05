@@ -7,7 +7,6 @@ export default function Home() {
   return (
     <div className="flex flex-col font-[family-name:var(--font-geist-sans)]">
         <Banner />
-        {/*<WhyChooseUs />*/}
         <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-8 sm:mb-12">
@@ -20,6 +19,18 @@ export default function Home() {
                     </p>
                 </div>
                 <FeaturesSection />
+            </div>
+        </section>
+
+        <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-8 sm:mb-12">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">Why Choose GitDocs</h2>
+                    <p className="text-base sm:text-lg text-gray-600 max-w-xs sm:max-w-xl md:max-w-3xl mx-auto mt-4 sm:mt-6">
+                        GitDocs makes creating professional README files for your GitHub repositories quick, easy, and hassle-free.
+                    </p>
+                </div>
+                <WhyChooseUs />
             </div>
         </section>
     </div>
