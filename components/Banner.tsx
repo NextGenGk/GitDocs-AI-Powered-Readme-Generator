@@ -1,8 +1,9 @@
 'use client';
 
 import Image from "next/image";
-import GitHubToMarkdown from "./GitHubToMarkdown";
 import {Typewriter} from "react-simple-typewriter";
+import {Button} from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Banner() {
     return (
@@ -18,27 +19,35 @@ export default function Banner() {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10" style={{ zIndex: -1 }}></div>
 
 
-            <div className="absolute inset-0 flex flex-col items-center justify-center w-full px-4 pt-16 sm:pt-24 md:pt-32">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 text-center text-slate-950">
+            <div className="absolute inset-0 flex flex-col items-top justify-start mt-26 w-full sm:pt-24 md:pt-32">
+                <h1 className="text-7xl font-mono text-slate-900 text-center mb-4 sm:mb-6 md:mb-8">
                     Your Code Deserves a Better {''}
-                    <span style={{ color: 'white', fontWeight: 'bold' }}>
-                        <Typewriter
-                            words={['README.', 'Readability', 'Documentation']}
-                            loop={10}
-                            cursor
-                            cursorStyle='_'
-                            typeSpeed={70}
-                            deleteSpeed={50}
-                            delaySpeed={1000}
-                        />
-                    </span>
+                    <div className="mt-3 sm:mt-4 md:mt-6 flex items-center justify-center">
+                        <span style={{ color: 'white', fontWeight: 'bold' }}>
+                            <Typewriter
+                                words={['README.', 'Readability', 'Documentation']}
+                                loop={10}
+                                cursor
+                                cursorStyle='_'
+                                typeSpeed={70}
+                                deleteSpeed={50}
+                                delaySpeed={1000}
+                            />
+                        </span>
+                    </div>
                 </h1>
-                <p className="text-base sm:text-lg mb-4 text-center max-w-xl sm:max-w-2xl text-slate-950">
-                    One Link. One Click. One Perfect README.
+                <p className="text-2xl font-mono text-slate-950 flex items-center justify-center">
+                    Docs That Developers Deserve.
                 </p>
-                <div className="p-4 sm:p-6 md:p-10 rounded-lg shadow-xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl bg-transparent" style={{ zIndex: 10 }}>
-                    <GitHubToMarkdown />
+
+                <div className="flex items-center justify-center mt-8 sm:mt-10 md:mt-12">
+                    <Button variant="default" className="px-8 border border-white-100">
+                        <Link href="/sign-in">
+                                Get Started
+                        </Link>
+                    </Button>
                 </div>
+
             </div>
         </div>
     )
