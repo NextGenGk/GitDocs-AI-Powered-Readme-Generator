@@ -1,53 +1,322 @@
+'use client'; // Add this if using App Router
+
+import React, { useState, useEffect } from 'react';
+import { Github, FileText, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import Banner from "@/components/Banner";
-import WhyChooseUs from "@/components/WhyChooseUs";
-import FeaturesSection from "@/components/FeatureSection";
-import React from "react";
-import SubscriptionPage from "@/components/SubscriptionPage";
+import { useAuth } from '@clerk/nextjs';
+import ProFeature from "@/components/ProFeature";
+import AdvancedFeature from "@/components/AdvancedFeature";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col font-[family-name:var(--font-geist-sans)]">
-        <Banner />
-        <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-8 sm:mb-12">
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">Features You've Never Seen Before</h2>
-                    <p className="text-base sm:text-lg text-gray-600 max-w-xs sm:max-w-xl md:max-w-3xl mx-auto mt-4 sm:mt-6">
-                        Say goodbye to boring, copy-paste templates. This is README
-                        generation like you've never seen before. Powered by AI, crafted
-                        for developers — your GitHub repos get the spotlight they deserve,
-                        instantly. No fluff. Just flawless documentation.
-                    </p>
-                </div>
-                <FeaturesSection />
-            </div>
-        </section>
+interface UsageInfo {
+    generationsUsed: number;
+    maxGenerations: number;
+    remaining: number;
+    isLimitReached: boolean;
+}
 
-        <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-8 sm:mb-12">
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">Why Choose GitDocs</h2>
-                    <p className="text-base sm:text-lg text-gray-600 max-w-xs sm:max-w-xl md:max-w-3xl mx-auto mt-4 sm:mt-6">
-                        GitDocs makes creating professional README files for your GitHub repositories quick, easy, and hassle-free.
-                    </p>
-                </div>
-                <WhyChooseUs />
-            </div>
-        </section>
+export default function ReadmeGeneratorPage() {
+    const { has } = useAuth();
+    const [planStatus, setPlanStatus] = useState({
+        hasBasicPlan: true, // Set basic plan to true by default for all users
+        hasProPlan: false,
+        hasPremiumPlan: false
+    });
 
-        <section className="py-16 sm:py-24 md:py-32 bg-gradient-to-b from-blue-50 to-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-8 sm:mb-12">
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4">Subscription Plans</h2>
-                    <p className="text-base sm:text-lg text-gray-600 max-w-xs sm:max-w-xl md:max-w-3xl mx-auto mt-4 sm:mt-6">
-                        Choose the plan that fits your workflow — whether you're a solo developer,
-                        a fast-moving startup, or a growing team. Get powerful README generation
-                        features, AI customization, and seamless GitHub integration at every level.
-                    </p>
+    // Define all hooks at the top level
+    const [githubUrl, setGithubUrl] = useState('');
+    const [markdown, setMarkdown] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [usageInfo, setUsageInfo] = useState<UsageInfo>({
+        generationsUsed: 0,
+        maxGenerations: 2, // Updated to 2
+        remaining: 2, // Updated to 2
+        isLimitReached: false
+    });
+
+    // Check user plan
+    useEffect(() => {
+        if (has) {
+            const hasProPlan = has({ plan: 'pro' });
+            const hasPremiumPlan = has({ plan: 'premium' });
+
+            // Only update if values have changed
+            setPlanStatus(prevStatus => {
+                if (prevStatus.hasProPlan !== hasProPlan || prevStatus.hasPremiumPlan !== hasPremiumPlan) {
+                    return {
+                        hasBasicPlan: true, // Always true for all users
+                        hasProPlan,
+                        hasPremiumPlan
+                    };
+                }
+                return prevStatus;
+            });
+        }
+    }, [has]);
+
+    // Load usage status - Fixed to use consistent empty dependency array
+    useEffect(() => {
+        const loadUsageStatus = async () => {
+            try {
+                await fetchUsageStatus();
+            } catch (error) {
+                console.error('Failed to load usage status:', error);
+            }
+        };
+
+        // Load usage status on mount
+        loadUsageStatus();
+    }, []); // Empty dependency array - this will run only once on mount
+
+    const fetchUsageStatus = async () => {
+        try {
+            const response = await fetch('/api/github-to-markdown');
+            if (response.ok) {
+                const data = await response.json();
+                setUsageInfo(data);
+            }
+        } catch (err) {
+            console.error('Failed to fetch usage status:', err);
+        }
+    };
+
+    const handleGenerate = async () => {
+        if (!githubUrl.trim()) {
+            setError('Please enter a GitHub repository URL');
+            return;
+        }
+
+        if (usageInfo.isLimitReached) {
+            setError(`Generation limit reached. Only ${usageInfo.maxGenerations} README generations are allowed.`);
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+        setMarkdown('');
+
+        try {
+            const response = await fetch('/api/github-to-markdown', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({githubUrl}),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMarkdown(data.markdown);
+                setUsageInfo({
+                    generationsUsed: data.generationsUsed,
+                    maxGenerations: data.maxGenerations,
+                    remaining: data.remaining,
+                    isLimitReached: data.isLimitReached
+                });
+            } else {
+                setError(data.error || 'Failed to generate README');
+                // Update usage info even on error to reflect current state
+                if (data.generationsUsed !== undefined) {
+                    setUsageInfo({
+                        generationsUsed: data.generationsUsed,
+                        maxGenerations: data.maxGenerations,
+                        remaining: data.remaining,
+                        isLimitReached: data.isLimitReached
+                    });
+                }
+            }
+        } catch (err) {
+            setError('Network error occurred. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(markdown);
+            // You could add a toast notification here to confirm copy
+        } catch (err) {
+            console.error('Failed to copy to clipboard:', err);
+        }
+    };
+
+    const getUsageColor = () => {
+        if (usageInfo.isLimitReached) return 'text-red-600';
+        if (usageInfo.remaining === 1) return 'text-yellow-600';
+        return 'text-green-600';
+    };
+
+    const getUsageIcon = () => {
+        if (usageInfo.isLimitReached) return <AlertCircle className="w-4 h-4"/>;
+        return <CheckCircle className="w-4 h-4"/>;
+    };
+
+    // Render based on plan status
+    if (planStatus.hasBasicPlan) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+                <div className="max-w-6xl mx-auto">
+                    {/* Header */}
+                    {/*<Banner />*/}
+                    <div className="text-center mb-8">
+                        <div className="flex items-center justify-center gap-3 mb-4">
+                            <Github className="w-8 h-8 text-gray-700"/>
+                            <FileText className="w-8 h-8 text-blue-600"/>
+                        </div>
+                        <h1 className="text-4xl font-bold text-gray-800 mb-2">README Generator</h1>
+                        <p className="text-gray-600 text-lg">
+                            Generate professional README.md files for your GitHub repositories
+                        </p>
+                    </div>
+
+                    {/* Usage Limit Card */}
+                    <div className="bg-white rounded-lg shadow-md p-6 mb-6 border-l-4 border-blue-500">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                {getUsageIcon()}
+                                <div>
+                                    <h3 className="font-semibold text-gray-800">Usage Limit</h3>
+                                    <p className="text-sm text-gray-600">Track your README generations</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <div className={`text-2xl font-bold ${getUsageColor()}`}>
+                                    {usageInfo.remaining}/{usageInfo.maxGenerations}
+                                </div>
+                                <div className="text-sm text-gray-500">Remaining</div>
+                            </div>
+                        </div>
+
+                        <div className="mt-4">
+                            <div className="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Generations Used</span>
+                                <span>{usageInfo.generationsUsed} of {usageInfo.maxGenerations}</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div
+                                    className={`h-2 rounded-full transition-all duration-300 ${
+                                        usageInfo.isLimitReached ? 'bg-red-500' : 'bg-blue-500'
+                                    }`}
+                                    style={{
+                                        width: `${(usageInfo.generationsUsed / usageInfo.maxGenerations) * 100}%`
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {usageInfo.isLimitReached && (
+                            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
+                                <div className="flex items-center gap-2 text-red-700">
+                                    <AlertCircle className="w-4 h-4"/>
+                                    <span className="text-sm font-medium">
+                                    Generation limit reached! You have used all {usageInfo.maxGenerations} available generations.
+                                </span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Input Section */}
+                        <div className="bg-white rounded-lg shadow-md p-6">
+                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Generate README</h2>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        GitHub Repository URL
+                                    </label>
+                                    <input
+                                        type="url"
+                                        value={githubUrl}
+                                        onChange={(e) => setGithubUrl(e.target.value)}
+                                        placeholder="https://github.com/username/repository"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
+                                        disabled={loading || usageInfo.isLimitReached}
+                                    />
+                                </div>
+
+                                <button
+                                    onClick={handleGenerate}
+                                    disabled={loading || usageInfo.isLimitReached}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-md transition-colors flex items-center justify-center gap-2"
+                                >
+                                    {loading ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin"/>
+                                            Generating...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FileText className="w-4 h-4"/>
+                                            Generate README
+                                        </>
+                                    )}
+                                </button>
+
+                                {error && (
+                                    <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                                        <div className="flex items-center gap-2 text-red-700">
+                                            <AlertCircle className="w-4 h-4"/>
+                                            <span className="text-sm">{error}</span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Output Section */}
+                        <div className="bg-white rounded-lg shadow-md p-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-xl font-semibold text-gray-800">Generated README</h2>
+                                {markdown && (
+                                    <button
+                                        onClick={copyToClipboard}
+                                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-md transition-colors"
+                                    >
+                                        Copy to Clipboard
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className="h-96 border border-gray-300 rounded-md overflow-hidden">
+                                {markdown ? (
+                                    <textarea
+                                        value={markdown}
+                                        readOnly
+                                        className="w-full h-full p-4 font-mono text-sm resize-none outline-none"
+                                    />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-gray-500">
+                                        <div className="text-center">
+                                            <FileText className="w-12 h-12 mx-auto mb-2 opacity-50"/>
+                                            <p>Generated README will appear here</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 text-center text-gray-500 text-sm">
+                        <p>This service is limited to {usageInfo.maxGenerations} README generations to ensure fair
+                            usage.</p>
+                    </div>
                 </div>
-                <SubscriptionPage />
             </div>
-        </section>
-    </div>
-  );
+        );
+    } else if (planStatus.hasProPlan) {
+        return <ProFeature />;
+    } else if (planStatus.hasPremiumPlan) {
+        return <AdvancedFeature />;
+    } else {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+                <div className="max-w-6xl mx-auto">
+                    <h1 className="text-3xl font-bold text-gray-800 text-center mt-10">Access Denied</h1>
+                    <p className="text-gray-600 text-center mt-4">Please upgrade to a Pro or Premium plan to access this feature.</p>
+                </div>
+            </div>
+        );
+    }
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 
-// The prompt to be used for generating the README.md
 const PROMPT = `You are a professional technical writer and open-source maintainer. Given a GitHub repository link, generate a complete and polished \`README.md\` file in Markdown format.
 
 Use the repository content to understand its purpose, tech stack, structure, and usage.
@@ -21,69 +21,209 @@ The \`README.md\` should include the following sections (even if the original re
 12. **Contact Info**: GitHub, email, or social media for reaching the author
 13. **Acknowledgements**: libraries, tools, or people credited (optional)
 
-For markdown badges use this repo:
-https://github.com/Ileriayo/markdown-badges
+For markdown badges use this repo: https://github.com/Ileriayo/markdown-badges
 
 Output should be in valid Markdown and follow good formatting practices with proper headers, code blocks, and links.`;
 
+// Store sessions with their generation counts
+const sessionCounts = new Map<string, number>();
+
+// Generation limits for different plans
+const BASIC_PLAN_LIMIT = 2;
+const PRO_PLAN_LIMIT = 50;
+const PREMIUM_PLAN_LIMIT = 100;
+
+// Function to get the generation limit based on user's plan
+async function getGenerationLimit(request: NextRequest): Promise<number> {
+  try {
+    const { has } = await auth();
+
+    if (has({ plan: 'premium' })) {
+      return PREMIUM_PLAN_LIMIT;
+    } else if (has({ plan: 'pro' })) {
+      return PRO_PLAN_LIMIT;
+    } else {
+      // Default to basic plan
+      return BASIC_PLAN_LIMIT;
+    }
+  } catch (error) {
+    // If auth fails or user is not authenticated, return basic plan limit
+    return BASIC_PLAN_LIMIT;
+  }
+}
+
+// Clean up old sessions (optional - prevents memory leaks)
+const SESSION_CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 hour
+setInterval(() => {
+  // In a real app, you might want to track session timestamps and clean up old ones
+  // For now, we'll keep it simple
+}, SESSION_CLEANUP_INTERVAL);
+
+function getSessionId(request: NextRequest): string {
+  // Try to get session ID from cookie
+  const sessionCookie = request.cookies.get('readme-session-id');
+  if (sessionCookie) {
+    return sessionCookie.value;
+  }
+
+  // Generate new session ID
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+
+function getSessionCount(sessionId: string): number {
+  return sessionCounts.get(sessionId) || 0;
+}
+
+function incrementSessionCount(sessionId: string): number {
+  const currentCount = getSessionCount(sessionId);
+  const newCount = currentCount + 1;
+  sessionCounts.set(sessionId, newCount);
+  return newCount;
+}
+
 export async function POST(request: NextRequest) {
   try {
-    // Parse the request body
+    const sessionId = getSessionId(request);
+    const currentCount = getSessionCount(sessionId);
+
+    // Get the generation limit based on user's plan
+    const maxGenerations = await getGenerationLimit(request);
+
+    // Check if limit is reached before processing
+    if (currentCount >= maxGenerations) {
+      const response = NextResponse.json(
+          {
+            error: `Session limit reached. Only ${maxGenerations} README generations are allowed per session.`,
+            generationsUsed: currentCount,
+            maxGenerations: maxGenerations,
+            remaining: maxGenerations - currentCount,
+            isLimitReached: true
+          },
+          { status: 429 }
+      );
+
+      // Set session cookie
+      response.cookies.set('readme-session-id', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 // 24 hours
+      });
+
+      return response;
+    }
+
     const body = await request.json();
     const { githubUrl } = body;
 
-    // Validate the GitHub URL
     if (!githubUrl || !isValidGithubUrl(githubUrl)) {
       return NextResponse.json(
-        { error: 'Invalid GitHub repository URL' },
-        { status: 400 }
+          { error: 'Invalid GitHub repository URL' },
+          { status: 400 }
       );
     }
 
-    // Get the Gemini API key from environment variables
     const geminiApiKey = process.env.GEMINI_API_KEY;
     if (!geminiApiKey) {
       return NextResponse.json(
-        { error: 'Gemini API key is not configured' },
-        { status: 500 }
+          { error: 'Gemini API key is not configured' },
+          { status: 500 }
       );
     }
 
-    // Call the Gemini API to generate the README.md
-    const markdownContent = await generateReadmeWithGemini(
-      githubUrl,
-      geminiApiKey
-    );
+    try {
+      const markdownContent = await generateReadmeWithGemini(githubUrl, geminiApiKey);
 
-    // Return the generated markdown content
-    return NextResponse.json({ markdown: markdownContent });
+      // Only increment counter after successful generation
+      const newCount = incrementSessionCount(sessionId);
+
+      const response = NextResponse.json({
+        markdown: markdownContent,
+        generationsUsed: newCount,
+        maxGenerations: maxGenerations,
+        remaining: maxGenerations - newCount,
+        isLimitReached: newCount >= maxGenerations
+      });
+
+      // Set session cookie
+      response.cookies.set('readme-session-id', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 // 24 hours
+      });
+
+      return response;
+    } catch (geminiError) {
+      console.error('Gemini API error:', geminiError);
+      const response = NextResponse.json(
+          {
+            error: 'Failed to generate README. Please try again later.',
+            generationsUsed: currentCount,
+            maxGenerations: maxGenerations,
+            remaining: maxGenerations - currentCount,
+            isLimitReached: currentCount >= maxGenerations
+          },
+          { status: 500 }
+      );
+
+      // Set session cookie even on error
+      response.cookies.set('readme-session-id', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 // 24 hours
+      });
+
+      return response;
+    }
   } catch (error) {
     console.error('Error processing request:', error);
     return NextResponse.json(
-      { error: 'Failed to process the request' },
-      { status: 500 }
+        { error: 'Failed to process the request' },
+        { status: 500 }
     );
   }
 }
 
-// Function to validate GitHub URL
+export async function GET(request: NextRequest) {
+  const sessionId = getSessionId(request);
+  const currentCount = getSessionCount(sessionId);
+
+  // Get the generation limit based on user's plan
+  const maxGenerations = await getGenerationLimit(request);
+
+  const response = NextResponse.json({
+    generationsUsed: currentCount,
+    maxGenerations: maxGenerations,
+    remaining: maxGenerations - currentCount,
+    isLimitReached: currentCount >= maxGenerations
+  });
+
+  // Set session cookie
+  response.cookies.set('readme-session-id', sessionId, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 // 24 hours
+  });
+
+  return response;
+}
+
 function isValidGithubUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
     return (
-      parsedUrl.hostname === 'github.com' &&
-      parsedUrl.pathname.split('/').filter(Boolean).length >= 2
+        parsedUrl.hostname === 'github.com' &&
+        parsedUrl.pathname.split('/').filter(Boolean).length >= 2
     );
   } catch (error) {
     return false;
   }
 }
 
-// Function to generate README.md using Gemini API
-async function generateReadmeWithGemini(
-  githubUrl: string,
-  apiKey: string
-): Promise<string> {
+async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Promise<string> {
   const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
     method: 'POST',
     headers: {
@@ -94,11 +234,7 @@ async function generateReadmeWithGemini(
       contents: [
         {
           role: 'user',
-          parts: [
-            {
-              text: PROMPT + '\n\n' + githubUrl
-            }
-          ]
+          parts: [{ text: PROMPT + '\n\n' + githubUrl }]
         }
       ],
       generationConfig: {
