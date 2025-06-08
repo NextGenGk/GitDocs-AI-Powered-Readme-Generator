@@ -19,7 +19,12 @@ export default function Banner() {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10" style={{ zIndex: -1 }}></div>
 
 
-            <div className="absolute inset-0 flex flex-col items-top justify-start mt-26 w-full sm:pt-24 md:pt-32">
+            <div className="absolute inset-0 flex flex-col items-center justify-start mt-18 w-full sm:pt-24 md:pt-32">
+                <div className="px-4 mb-6 flex items-center">
+                    <Button variant="default" className="px-8 border border-white-100 rounded-4xl">
+                            ✨ Ready. Set. Document!!
+                    </Button>
+                </div>
                 <h1 className="text-7xl font-mono text-slate-900 text-center mb-4 sm:mb-6 md:mb-8">
                     Your Code Deserves a Better {''}
                     <div className="mt-3 sm:mt-4 md:mt-6 flex items-center justify-center">
@@ -41,11 +46,20 @@ export default function Banner() {
                 </p>
 
                 <div className="flex items-center justify-center mt-8 sm:mt-10 md:mt-12">
-                    <Button variant="default" className="px-8 border border-white-100">
+                    <div className="px-4">
+                        <Button variant="default" className="px-8 border border-white-100 rounded-4xl">
                         <Link href="/sign-in">
-                                Get Started
+                            Get Started
                         </Link>
                     </Button>
+                    </div>
+                    <div className="px-4">
+                        <Button variant="default" className="px-8 border border-white-100 rounded-4xl">
+                            <Link href="/demo.webp">
+                                View Demo
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
             </div>
