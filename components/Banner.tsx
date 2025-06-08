@@ -46,20 +46,11 @@ export default function Banner() {
                 </p>
 
                 <div className="flex items-center justify-center mt-8 sm:mt-10 md:mt-12">
-                    <div className="px-4">
-                        <Button variant="default" className="px-8 border border-white-100 rounded-4xl">
+                    <Button variant="default" className="px-8 border border-white-100 rounded-4xl">
                         <Link href="/sign-in">
                             Get Started
                         </Link>
                     </Button>
-                    </div>
-                    <div className="px-4">
-                        <Button variant="default" className="px-8 border border-white-100 rounded-4xl">
-                            <Link href="/demo.webp">
-                                View Demo
-                            </Link>
-                        </Button>
-                    </div>
                 </div>
 
             </div>
