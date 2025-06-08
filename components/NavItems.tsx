@@ -31,7 +31,7 @@ const NavItems = ({ isMobile = false }: NavItemsProps) => {
               href={`#${item.scrollId}`}
               className={cn(
                 "text-lg font-stretch-semi-condensed transition-colors",
-                isMobile ? "text-black" : "text-white",
+                isMobile ? "text-black" : "text-black",
                 isActive && "text-zinc-900"
               )}
             >
@@ -45,8 +45,8 @@ const NavItems = ({ isMobile = false }: NavItemsProps) => {
             key={item.label}
             href={item.href}
             className={cn(
-              "text-sm font-medium transition-colors",
-              isMobile ? "text-black" : "text-white",
+              "text-lg font-stretch-semi-condensed transition-colors",
+              isMobile ? "text-black" : "text-black",
               isActive && "text-zinc-900"
             )}
           >

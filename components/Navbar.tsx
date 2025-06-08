@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import NavItems from "./NavItems";
 import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -15,8 +16,8 @@ const Navbar = () => {
                 <Link href="/">
                     <div className="flex items-center justify-center gap-2.5 cursor-pointer">
                         <Image src="/logo.png" alt="Logo" width={38} height={36} />
-                        <span className="text-2xl sm:text-3xl font-semibold text-white hover:text-zinc-100 transition-colors">
-                            GitDocs <span className="text-4xl text-white font-semibold"> . </span>
+                        <span className="text-2xl sm:text-3xl font-semibold text-gray-950 hover:text-gray-900 transition-colors">
+                            GitDocs <span className="text-4xl text-gray-950 font-semibold"> . </span>
                         </span>
                     </div>
                 </Link>
@@ -27,7 +28,9 @@ const Navbar = () => {
                 <NavItems />
                 <SignedOut>
                     <SignInButton>
-                        <button className="border border-white text-white hover:bg-white hover:text-black transition-colors rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer">Sign In</button>
+                        <Button variant="outline" size="lg" className="bg-gray-950 text-white
+                        hover:bg-gray-900 hover:text-white transition-colors rounded-4xl px-4
+                        py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer">Sign In</Button>
                     </SignInButton>
                 </SignedOut>
                 <SignedIn>
@@ -62,7 +65,8 @@ const Navbar = () => {
                         <div className="mt-4">
                             <SignedOut>
                                 <SignInButton>
-                                    <button className="border border-white text-white hover:bg-white hover:text-black transition-colors rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer w-full justify-center">Sign In</button>
+                                    <Button variant="outline" size="lg" className="bg-gray-950 text-white
+                        hover:bg-gray-900 hover:text-white transition-colors rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer w-full justify-center">Sign In</Button>
                                 </SignInButton>
                             </SignedOut>
                             <SignedIn>
