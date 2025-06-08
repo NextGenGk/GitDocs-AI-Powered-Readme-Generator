@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Github, FileText, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
-import Image from "next/image";
+import { FileText, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '@clerk/nextjs';
 import ProFeature from "@/components/ProFeature";
 import AdvancedFeature from "@/components/AdvancedFeature";
-import { Typewriter } from "react-simple-typewriter";
 
 interface UsageInfo {
     generationsUsed: number;
@@ -157,10 +155,6 @@ export default function ReadmeGeneratorPage() {
                     <div className="max-w-6xl mx-auto px-4">
                         {/* Generator Section Header */}
                         <div className="text-center mb-12">
-                            {/*<div className="flex items-center justify-center gap-3 mb-4">*/}
-                            {/*    <Github className="w-8 h-8 text-gray-700"/>*/}
-                            {/*    <FileText className="w-8 h-8 text-blue-600"/>*/}
-                            {/*</div>*/}
                             <h2 className="text-5xl font-bold text-gray-800 mb-2">You Code. We Document.</h2>
                             <p className="text-gray-600 text-lg">
                                 Turn GitHub repos into production-grade documentation — in seconds, not hours.
