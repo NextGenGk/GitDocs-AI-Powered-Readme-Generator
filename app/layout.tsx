@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
+import BasicFeature from "@/components/BasicFeature";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton, RedirectToSignIn
+} from '@clerk/nextjs'
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
@@ -26,17 +34,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-    >
+    <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}
         >
-          <Navbar />
-          <main>
-            {children}
-          </main>
+          <SignedIn>
+            <Navbar />
+            <BasicFeature />
+          </SignedIn>
+
+          <SignedOut>
+            <RedirectToSignIn />
+            <Navbar />
+              <main>
+                {children}
+              </main>
+          </SignedOut>
         </body>
       </html>
     </ClerkProvider>

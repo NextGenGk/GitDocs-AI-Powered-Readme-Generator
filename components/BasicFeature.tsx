@@ -146,7 +146,7 @@ export default function ReadmeGeneratorPage() {
 
     if (planStatus.hasBasicPlan) {
         return (
-            <div className="min-h-screen bg-[/banner.jpg] bg-cover bg-center bg-no-repeat">
+            <div className="min-h-screeN ">
                 {/* Hero Banner Section */}
                 {/*<Banner />*/}
 
