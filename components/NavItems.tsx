@@ -6,9 +6,9 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Features", href: "/features" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "FAQ's", href: "/faqs" },
+  { label: "Features", href: "/features", scrollId: "features" },
+  { label: "Pricing", href: "/pricing", scrollId: "pricing" },
+  { label: "FAQ", href: "/faq", scrollId: "faq" },
 ];
 
 interface NavItemsProps {
@@ -17,30 +17,44 @@ interface NavItemsProps {
 
 const NavItems = ({ isMobile = false }: NavItemsProps) => {
   const pathname = usePathname();
+  const isHomePage = pathname === "/";
 
   return (
-    <nav className={cn(
-      isMobile 
-        ? "flex flex-col gap-4" 
-        : "flex items-center gap-4"
-    )}>
-      {navItems.map(({ label, href }) => (
-        <Link
-          href={href}
-          key={label}
-          className={cn(
-            "text-white hover:text-zinc-100 transition-colors", 
-            isMobile 
-              ? "text-lg py-2" 
-              : "text-[15px] sm:text-[17px] px-1",
-            pathname === href && "font-semibold"
-          )}
-          onClick={isMobile ? () => document.body.click() : undefined}
-        >
-          {label}
-        </Link>
-      ))}
-    </nav>
+    <div className={cn("flex gap-6", isMobile && "flex-col")}>
+      {navItems.map((item) => {
+        const isActive = pathname === item.href;
+
+        if (isHomePage) {
+          return (
+            <a
+              key={item.label}
+              href={`#${item.scrollId}`}
+              className={cn(
+                "text-lg font-stretch-semi-condensed transition-colors",
+                isMobile ? "text-black" : "text-white",
+                isActive && "text-zinc-900"
+              )}
+            >
+              {item.label}
+            </a>
+          );
+        }
+
+        return (
+          <Link
+            key={item.label}
+            href={item.href}
+            className={cn(
+              "text-sm font-medium transition-colors",
+              isMobile ? "text-black" : "text-white",
+              isActive && "text-zinc-900"
+            )}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+    </div>
   );
 };
 

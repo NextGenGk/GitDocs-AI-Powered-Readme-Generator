@@ -7,9 +7,11 @@ import Faq from "@/components/Faq";
 
 export default function Page() {
     return (
-        <main>
+        <main className="min-h-screen">
             <Banner />
-            <FeaturesSection />
+            <div id="features" className="scroll-mt-20">
+                <FeaturesSection />
+            </div>
             <WhyChooseUs />
             <section className="py-16 sm:py-24 md:py-32 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,10 +21,14 @@ export default function Page() {
                             Choose the plan that fits your workflow — whether you're a solo developer, a fast-moving startup, or a growing team. Get powerful README generation features, AI customization, and seamless GitHub integration at every level.
                         </p>
                     </div>
-                    <SubscriptionPage />
+                    <div id="pricing" className="scroll-mt-20">
+                        <SubscriptionPage />
+                    </div>
                 </div>
             </section>
-            <Faq />
+            <div id="faq" className="scroll-mt-20">
+                <Faq />
+            </div>
             <Footer />
         </main>
     )
