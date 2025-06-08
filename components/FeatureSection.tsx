@@ -71,7 +71,7 @@ export function FeaturesSection() {
     ];
 
     return (
-        <section className="bg-gradient-to-br from-slate-50 via-white to-slate-100 py-20 px-6">
+        <section className="bg-slate-50 py-20 px-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header Section */}
                 <div className="text-center mb-16">
