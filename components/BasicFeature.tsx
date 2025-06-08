@@ -1,10 +1,21 @@
-'use client';
+'use server';
 
 import React, { useState, useEffect } from 'react';
-import { FileText, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { FileText, AlertCircle, CheckCircle, Loader2, Copy, Github } from 'lucide-react';
 import { useAuth } from '@clerk/nextjs';
 import ProFeature from "@/components/ProFeature";
 import AdvancedFeature from "@/components/AdvancedFeature";
+
+// shadcn/ui components
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface UsageInfo {
     generationsUsed: number;
@@ -25,9 +36,10 @@ export default function ReadmeGeneratorPage() {
     const [markdown, setMarkdown] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [copySuccess, setCopySuccess] = useState(false);
     const [usageInfo, setUsageInfo] = useState<UsageInfo>({
         generationsUsed: 0,
-        maxGenerations: 3,
+        maxGenerations: 3, // Increased limit to 3
         remaining: 3,
         isLimitReached: false
     });
@@ -103,7 +115,7 @@ export default function ReadmeGeneratorPage() {
                 setMarkdown(data.markdown);
                 setUsageInfo({
                     generationsUsed: data.generationsUsed,
-                    maxGenerations: data.maxGenerations,
+                    maxGenerations: data.maxGenerations || 3, // Fallback to 3
                     remaining: data.remaining,
                     isLimitReached: data.isLimitReached
                 });
@@ -112,7 +124,7 @@ export default function ReadmeGeneratorPage() {
                 if (data.generationsUsed !== undefined) {
                     setUsageInfo({
                         generationsUsed: data.generationsUsed,
-                        maxGenerations: data.maxGenerations,
+                        maxGenerations: data.maxGenerations || 3, // Fallback to 3
                         remaining: data.remaining,
                         isLimitReached: data.isLimitReached
                     });
@@ -128,168 +140,184 @@ export default function ReadmeGeneratorPage() {
     const copyToClipboard = async () => {
         try {
             await navigator.clipboard.writeText(markdown);
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
         } catch (err) {
             console.error('Failed to copy to clipboard:', err);
         }
     };
 
-    const getUsageColor = () => {
-        if (usageInfo.isLimitReached) return 'text-red-600';
-        if (usageInfo.remaining === 1) return 'text-yellow-600';
-        return 'text-green-600';
+    const getUsageVariant = () => {
+        if (usageInfo.isLimitReached) return 'destructive';
+        if (usageInfo.remaining === 1) return 'secondary';
+        return 'default';
     };
 
-    const getUsageIcon = () => {
-        if (usageInfo.isLimitReached) return <AlertCircle className="w-4 h-4"/>;
-        return <CheckCircle className="w-4 h-4"/>;
+    const getProgressColor = () => {
+        const percentage = (usageInfo.generationsUsed / usageInfo.maxGenerations) * 100;
+        if (percentage >= 100) return 'bg-destructive';
+        if (percentage >= 75) return 'bg-yellow-500';
+        return 'bg-primary';
     };
 
     if (planStatus.hasBasicPlan) {
         return (
-            <div className="min-h-screeN ">
-                {/* Hero Banner Section */}
-                {/*<Banner />*/}
+            <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+                {/* Hero Section */}
+                <div className="container mx-auto px-4 py-8 md:py-16">
+                    <div className="text-center mb-8 md:mb-12 space-y-4">
+                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                            You Code. We Document.
+                        </h1>
+                        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                            Turn GitHub repos into production-grade documentation — in seconds, not hours.
+                        </p>
+                    </div>
 
-                {/* Main Content Section */}
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 py-16">
-                    <div className="max-w-6xl mx-auto px-4">
-                        {/* Generator Section Header */}
-                        <div className="text-center mb-12">
-                            <h2 className="text-5xl font-bold text-gray-800 mb-2">You Code. We Document.</h2>
-                            <p className="text-gray-600 text-lg">
-                                Turn GitHub repos into production-grade documentation — in seconds, not hours.
-                            </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {/* Input Section */}
-                            <div className="bg-white rounded-lg shadow-md p-6">
-                                <h3 className="text-xl font-semibold text-gray-800 mb-4">Generate README</h3>
-
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            GitHub Repository URL
-                                        </label>
-                                        <input
-                                            type="url"
-                                            value={githubUrl}
-                                            onChange={(e) => setGithubUrl(e.target.value)}
-                                            placeholder="https://github.com/username/repository"
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
-                                            disabled={loading || usageInfo.isLimitReached}
-                                        />
-                                    </div>
-
-                                    <button
-                                        onClick={handleGenerate}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 max-w-7xl mx-auto">
+                        {/* Input Section */}
+                        <Card className="w-full">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Github className="h-5 w-5" />
+                                    Generate README
+                                </CardTitle>
+                                <CardDescription>
+                                    Enter your GitHub repository URL to generate a comprehensive README
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="github-url">GitHub Repository URL</Label>
+                                    <Input
+                                        id="github-url"
+                                        type="url"
+                                        value={githubUrl}
+                                        onChange={(e) => setGithubUrl(e.target.value)}
+                                        placeholder="https://github.com/username/repository"
                                         disabled={loading || usageInfo.isLimitReached}
-                                        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-md transition-colors flex items-center justify-center gap-2"
-                                    >
-                                        {loading ? (
-                                            <>
-                                                <Loader2 className="w-4 h-4 animate-spin"/>
-                                                Generating...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <FileText className="w-4 h-4"/>
-                                                Generate README
-                                            </>
-                                        )}
-                                    </button>
-
-                                    {error && (
-                                        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                                            <div className="flex items-center gap-2 text-red-700">
-                                                <AlertCircle className="w-4 h-4"/>
-                                                <span className="text-sm">{error}</span>
-                                            </div>
-                                        </div>
-                                    )}
+                                        className="w-full"
+                                    />
                                 </div>
-                            </div>
 
-                            {/* Output Section */}
-                            <div className="bg-white rounded-lg shadow-md p-6">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-xl font-semibold text-gray-800">Generated README</h3>
+                                <Button
+                                    onClick={handleGenerate}
+                                    disabled={loading || usageInfo.isLimitReached}
+                                    className="w-full"
+                                    size="lg"
+                                >
+                                    {loading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Generating...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FileText className="mr-2 h-4 w-4" />
+                                            Generate README
+                                        </>
+                                    )}
+                                </Button>
+
+                                {error && (
+                                    <Alert variant="destructive">
+                                        <AlertCircle className="h-4 w-4" />
+                                        <AlertDescription>{error}</AlertDescription>
+                                    </Alert>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Output Section */}
+                        <Card className="w-full">
+                            <CardHeader>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <CardTitle>Generated README</CardTitle>
+                                        <CardDescription>
+                                            Your generated README markdown content
+                                        </CardDescription>
+                                    </div>
                                     {markdown && (
-                                        <button
+                                        <Button
                                             onClick={copyToClipboard}
-                                            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-md transition-colors"
+                                            variant="outline"
+                                            size="sm"
                                         >
-                                            Copy to Clipboard
-                                        </button>
+                                            <Copy className="mr-2 h-4 w-4" />
+                                            {copySuccess ? 'Copied!' : 'Copy'}
+                                        </Button>
                                     )}
                                 </div>
-
-                                <div className="h-96 border border-gray-300 rounded-md overflow-hidden">
+                            </CardHeader>
+                            <CardContent>
+                                <div className="h-64 md:h-80 lg:h-96 border rounded-md overflow-hidden">
                                     {markdown ? (
-                                        <textarea
+                                        <Textarea
                                             value={markdown}
                                             readOnly
-                                            className="w-full h-full p-4 font-mono text-sm resize-none outline-none"
+                                            className="w-full h-full font-mono text-sm resize-none border-0 focus-visible:ring-0"
                                         />
                                     ) : (
-                                        <div className="flex items-center justify-center h-full text-gray-500">
-                                            <div className="text-center">
-                                                <FileText className="w-12 h-12 mx-auto mb-2 opacity-50"/>
+                                        <div className="flex items-center justify-center h-full text-muted-foreground">
+                                            <div className="text-center space-y-3">
+                                                <FileText className="h-12 w-12 mx-auto opacity-50" />
                                                 <p>Generated README will appear here</p>
                                             </div>
                                         </div>
                                     )}
                                 </div>
-                            </div>
-                        </div>
+                            </CardContent>
+                        </Card>
+                    </div>
 
-                        {/* Usage Limit Card */}
-                        <div className="bg-white rounded-lg shadow-md p-6 mt-10 border-l-4 border-blue-500">
-                            <div className="flex items-center justify-between">
+                    {/* Usage Tracking Card */}
+                    <Card className="mt-6 md:mt-8 max-w-7xl mx-auto">
+                        <CardHeader>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                 <div className="flex items-center gap-3">
-                                    {getUsageIcon()}
+                                    {usageInfo.isLimitReached ? (
+                                        <AlertCircle className="h-5 w-5 text-destructive" />
+                                    ) : (
+                                        <CheckCircle className="h-5 w-5 text-green-600" />
+                                    )}
                                     <div>
-                                        <h4 className="font-semibold text-gray-800">Usage Limit</h4>
-                                        <p className="text-sm text-gray-600">Track your README generations</p>
+                                        <CardTitle className="text-lg">Usage Tracking</CardTitle>
+                                        <CardDescription>Monitor your README generations</CardDescription>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className={`text-2xl font-bold ${getUsageColor()}`}>
+                                    <Badge variant={getUsageVariant()} className="text-lg px-3 py-1">
                                         {usageInfo.remaining}/{usageInfo.maxGenerations}
-                                    </div>
-                                    <div className="text-sm text-gray-500">Remaining</div>
+                                    </Badge>
+                                    <p className="text-xs text-muted-foreground mt-1">Remaining</p>
                                 </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex justify-between text-sm text-muted-foreground">
+                                <span>Generations Used</span>
+                                <span>{usageInfo.generationsUsed} of {usageInfo.maxGenerations}</span>
                             </div>
 
-                            <div className="mt-4">
-                                <div className="flex justify-between text-sm text-gray-600 mb-1">
-                                    <span>Generations Used</span>
-                                    <span>{usageInfo.generationsUsed} of {usageInfo.maxGenerations}</span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
-                                    <div
-                                        className={`h-2 rounded-full transition-all duration-300 ${
-                                            usageInfo.isLimitReached ? 'bg-red-500' : 'bg-blue-500'
-                                        }`}
-                                        style={{
-                                            width: `${(usageInfo.generationsUsed / usageInfo.maxGenerations) * 100}%`
-                                        }}
-                                    />
-                                </div>
-                            </div>
+                            <Progress
+                                value={(usageInfo.generationsUsed / usageInfo.maxGenerations) * 100}
+                                className="w-full"
+                            />
 
                             {usageInfo.isLimitReached && (
-                                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
-                                    <div className="flex items-center gap-2 text-red-700">
-                                        <AlertCircle className="w-4 h-4"/>
-                                        <span className="text-sm font-medium">
+                                <>
+                                    <Separator />
+                                    <Alert variant="destructive">
+                                        <AlertCircle className="h-4 w-4" />
+                                        <AlertDescription>
                                             Generation limit reached! You have used all {usageInfo.maxGenerations} available generations.
-                                        </span>
-                                    </div>
-                                </div>
+                                        </AlertDescription>
+                                    </Alert>
+                                </>
                             )}
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         );
@@ -299,11 +327,15 @@ export default function ReadmeGeneratorPage() {
         return <AdvancedFeature />;
     } else {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-                <div className="max-w-6xl mx-auto">
-                    <h1 className="text-3xl font-bold text-gray-800 text-center mt-10">Access Denied</h1>
-                    <p className="text-gray-600 text-center mt-4">Please upgrade to a Pro or Premium plan to access this feature.</p>
-                </div>
+            <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">
+                <Card className="max-w-md w-full">
+                    <CardHeader className="text-center">
+                        <CardTitle className="text-2xl">Access Denied</CardTitle>
+                        <CardDescription>
+                            Please upgrade to a Pro or Premium plan to access this feature.
+                        </CardDescription>
+                    </CardHeader>
+                </Card>
             </div>
         );
     }

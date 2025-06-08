@@ -1,8 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Github, FileText, AlertCircle, CheckCircle, Loader2, Download } from 'lucide-react';
-import Banner from "@/components/Banner";
+import React, { useState } from 'react';
+import { Github, FileText, AlertCircle, CheckCircle, Loader2, Download, Copy, RotateCcw } from 'lucide-react';
+
+// shadcn/ui components
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface UsageInfo {
     generationsUsed: number;
@@ -16,6 +26,7 @@ export default function ReadmeGeneratorPage() {
     const [markdown, setMarkdown] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [copySuccess, setCopySuccess] = useState(false);
     const [usageInfo, setUsageInfo] = useState<UsageInfo>({
         generationsUsed: 0,
         maxGenerations: 50,
@@ -23,11 +34,8 @@ export default function ReadmeGeneratorPage() {
         isLimitReached: false
     });
 
-    // No useEffect needed - just use the initial state
-
     const updateUsageInfo = (newUsageInfo: UsageInfo) => {
         setUsageInfo(newUsageInfo);
-        // No storage - just update state
     };
 
     const handleGenerate = async () => {
@@ -78,7 +86,8 @@ export default function ReadmeGeneratorPage() {
     const copyToClipboard = async () => {
         try {
             await navigator.clipboard.writeText(markdown);
-            // You could add a toast notification here to confirm copy
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
         } catch (err) {
             console.error('Failed to copy to clipboard:', err);
         }
@@ -112,184 +121,199 @@ export default function ReadmeGeneratorPage() {
         setMarkdown('');
     };
 
-    const getUsageColor = () => {
-        if (usageInfo.isLimitReached) return 'text-red-600';
-        if (usageInfo.remaining <= 10) return 'text-yellow-600';
-        return 'text-green-600';
-    };
-
-    const getUsageIcon = () => {
-        if (usageInfo.isLimitReached) return <AlertCircle className="w-4 h-4" />;
-        return <CheckCircle className="w-4 h-4" />;
+    const getUsageVariant = () => {
+        if (usageInfo.isLimitReached) return 'destructive';
+        if (usageInfo.remaining <= 10) return 'secondary';
+        return 'default';
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-            <div className="max-w-6xl mx-auto">
-                {/* Header */}
-                {/*<Banner />*/}
-                <div className="text-center mb-8">
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                        <Github className="w-8 h-8 text-gray-700" />
-                        <FileText className="w-8 h-8 text-blue-600" />
-                    </div>
-                    <h1 className="text-4xl font-bold text-gray-800 mb-2">README Generator</h1>
-                    <p className="text-gray-600 text-lg">
-                        Generate professional README.md files for your GitHub repositories
+        <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+            <div className="container mx-auto px-4 py-8 md:py-16 max-w-7xl">
+                {/* Hero Section */}
+                <div className="text-center mb-8 md:mb-12 space-y-4">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                        You Code. We Document.
+                    </h1>
+                    <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                        Turn GitHub repos into production-grade documentation — in seconds, not hours.
                     </p>
                 </div>
 
-                {/* Usage Limit Card */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-6 border-l-4 border-blue-500">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            {getUsageIcon()}
-                            <div>
-                                <h3 className="font-semibold text-gray-800">Session Usage Limit</h3>
-                                <p className="text-sm text-gray-600">Track your README generations per session</p>
+                {/* Usage Tracking Card */}
+                <Card className="mb-6 md:mb-8">
+                    <CardHeader>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-center gap-3">
+                                {usageInfo.isLimitReached ? (
+                                    <AlertCircle className="h-5 w-5 text-destructive" />
+                                ) : (
+                                    <CheckCircle className="h-5 w-5 text-green-600" />
+                                )}
+                                <div>
+                                    <CardTitle className="text-lg">Session Usage Limit</CardTitle>
+                                    <CardDescription>Track your README generations per session</CardDescription>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <Badge variant={getUsageVariant()} className="text-lg px-3 py-1">
+                                    {usageInfo.remaining}/{usageInfo.maxGenerations}
+                                </Badge>
+                                <p className="text-xs text-muted-foreground mt-1">Remaining</p>
                             </div>
                         </div>
-                        <div className="text-right">
-                            <div className={`text-2xl font-bold ${getUsageColor()}`}>
-                                {usageInfo.remaining}/{usageInfo.maxGenerations}
-                            </div>
-                            <div className="text-sm text-gray-500">Remaining</div>
-                        </div>
-                    </div>
-
-                    <div className="mt-4">
-                        <div className="flex justify-between text-sm text-gray-600 mb-1">
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="flex justify-between text-sm text-muted-foreground">
                             <span>Generations Used</span>
                             <span>{usageInfo.generationsUsed} of {usageInfo.maxGenerations}</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                                className={`h-2 rounded-full transition-all duration-300 ${
-                                    usageInfo.isLimitReached ? 'bg-red-500' : 'bg-blue-500'
-                                }`}
-                                style={{
-                                    width: `${(usageInfo.generationsUsed / usageInfo.maxGenerations) * 100}%`
-                                }}
-                            />
-                        </div>
-                    </div>
+                        
+                        <Progress 
+                            value={(usageInfo.generationsUsed / usageInfo.maxGenerations) * 100} 
+                            className="w-full"
+                        />
 
-                    {usageInfo.isLimitReached && (
-                        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-red-700">
-                                    <AlertCircle className="w-4 h-4" />
-                                    <span className="text-sm font-medium">
-                                        Session limit reached! You have used all {usageInfo.maxGenerations} available generations.
-                                    </span>
-                                </div>
-                                <button
-                                    onClick={resetUsage}
-                                    className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-xs rounded-md transition-colors"
-                                >
-                                    Reset Session
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
+                        {usageInfo.isLimitReached && (
+                            <>
+                                <Separator />
+                                <Alert variant="destructive">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Session Limit Reached!</AlertTitle>
+                                    <AlertDescription className="flex items-center justify-between mt-2">
+                                        <span>You have used all {usageInfo.maxGenerations} available generations.</span>
+                                        <Button
+                                            onClick={resetUsage}
+                                            variant="outline"
+                                            size="sm"
+                                            className="ml-4"
+                                        >
+                                            <RotateCcw className="mr-2 h-3 w-3" />
+                                            Reset Session
+                                        </Button>
+                                    </AlertDescription>
+                                </Alert>
+                            </>
+                        )}
+                    </CardContent>
+                </Card>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                     {/* Input Section */}
-                    <div className="bg-white rounded-lg shadow-md p-6">
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4">Generate README</h2>
-
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    GitHub Repository URL
-                                </label>
-                                <input
+                    <Card className="w-full">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Github className="h-5 w-5" />
+                                Generate README
+                            </CardTitle>
+                            <CardDescription>
+                                Enter your GitHub repository URL to generate comprehensive documentation
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="github-url">GitHub Repository URL</Label>
+                                <Input
+                                    id="github-url"
                                     type="url"
                                     value={githubUrl}
                                     onChange={(e) => setGithubUrl(e.target.value)}
                                     placeholder="https://github.com/username/repository"
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
                                     disabled={loading || usageInfo.isLimitReached}
+                                    className="w-full"
                                 />
                             </div>
 
-                            <button
+                            <Button
                                 onClick={handleGenerate}
                                 disabled={loading || usageInfo.isLimitReached}
-                                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-md transition-colors flex items-center justify-center gap-2"
+                                className="w-full"
+                                size="lg"
                             >
                                 {loading ? (
                                     <>
-                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                         Generating...
                                     </>
                                 ) : (
                                     <>
-                                        <FileText className="w-4 h-4" />
+                                        <FileText className="mr-2 h-4 w-4" />
                                         Generate README
                                     </>
                                 )}
-                            </button>
+                            </Button>
 
                             {error && (
-                                <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                                    <div className="flex items-center gap-2 text-red-700">
-                                        <AlertCircle className="w-4 h-4" />
-                                        <span className="text-sm">{error}</span>
-                                    </div>
-                                </div>
+                                <Alert variant="destructive">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertDescription>{error}</AlertDescription>
+                                </Alert>
                             )}
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Output Section */}
-                    <div className="bg-white rounded-lg shadow-md p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-semibold text-gray-800">Generated README</h2>
-                            {markdown && (
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={copyToClipboard}
-                                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-md transition-colors flex items-center gap-1"
-                                    >
-                                        <FileText className="w-3 h-3" />
-                                        Copy
-                                    </button>
-                                    <button
-                                        onClick={downloadReadme}
-                                        className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm rounded-md transition-colors flex items-center gap-1"
-                                    >
-                                        <Download className="w-3 h-3" />
-                                        Download
-                                    </button>
+                    <Card className="w-full">
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <CardTitle>Generated README</CardTitle>
+                                    <CardDescription>
+                                        Your generated README markdown content
+                                    </CardDescription>
                                 </div>
-                            )}
-                        </div>
-
-                        <div className="h-96 border border-gray-300 rounded-md overflow-hidden">
-                            {markdown ? (
-                                <textarea
-                                    value={markdown}
-                                    readOnly
-                                    className="w-full h-full p-4 font-mono text-sm resize-none outline-none"
-                                />
-                            ) : (
-                                <div className="flex items-center justify-center h-full text-gray-500">
-                                    <div className="text-center">
-                                        <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                                        <p>Generated README will appear here</p>
+                                {markdown && (
+                                    <div className="flex gap-2">
+                                        <Button
+                                            onClick={copyToClipboard}
+                                            variant="outline"
+                                            size="sm"
+                                        >
+                                            <Copy className="mr-2 h-3 w-3" />
+                                            {copySuccess ? 'Copied!' : 'Copy'}
+                                        </Button>
+                                        <Button
+                                            onClick={downloadReadme}
+                                            variant="outline"
+                                            size="sm"
+                                        >
+                                            <Download className="mr-2 h-3 w-3" />
+                                            Download
+                                        </Button>
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                                )}
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="h-64 md:h-80 lg:h-96 border rounded-md overflow-hidden">
+                                {markdown ? (
+                                    <Textarea
+                                        value={markdown}
+                                        readOnly
+                                        className="w-full h-full font-mono text-sm resize-none border-0 focus-visible:ring-0"
+                                    />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-muted-foreground">
+                                        <div className="text-center space-y-3">
+                                            <FileText className="h-12 w-12 mx-auto opacity-50" />
+                                            <p>Generated README will appear here</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
 
-                <div className="mt-8 text-center text-gray-500 text-sm">
-                    <p>This service is limited to {usageInfo.maxGenerations} README generations per page load to ensure fair usage.</p>
-                    <p className="mt-1">Refresh the page to reset your generation limit.</p>
-                </div>
+                {/* Footer Info */}
+                <Card className="mt-6 md:mt-8">
+                    <CardContent className="pt-6">
+                        <div className="text-center text-muted-foreground text-sm space-y-2">
+                            <p>This service is limited to {usageInfo.maxGenerations} README generations per session to ensure fair usage.</p>
+                            <p>Refresh the page or use the reset button to start a new session.</p>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
