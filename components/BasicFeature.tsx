@@ -1,10 +1,9 @@
-'use server';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { FileText, AlertCircle, CheckCircle, Loader2, Copy, Github } from 'lucide-react';
 import { useAuth } from '@clerk/nextjs';
 import ProFeature from "@/components/ProFeature";
-import AdvancedFeature from "@/components/AdvancedFeature";
 
 // shadcn/ui components
 import { Button } from "@/components/ui/button";
@@ -323,8 +322,6 @@ export default function ReadmeGeneratorPage() {
         );
     } else if (planStatus.hasProPlan) {
         return <ProFeature />;
-    } else if (planStatus.hasPremiumPlan) {
-        return <AdvancedFeature />;
     } else {
         return (
             <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">

@@ -131,7 +131,7 @@ const GitDocsFAQ = () => {
     });
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-16 px-4">
+        <div className="min-h-screen bg-white py-16 px-4">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">
@@ -235,46 +235,46 @@ const GitDocsFAQ = () => {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="grid md:grid-cols-3 gap-6 mb-12">
-                    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-center">
-                        <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                            <FileText className="w-6 h-6 text-white" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Documentation</h3>
-                        <p className="text-gray-600 text-sm mb-4">
-                            Read our comprehensive guides and tutorials
-                        </p>
-                        <button className="text-blue-600 hover:text-blue-700 font-medium">
-                            View Docs →
-                        </button>
-                    </div>
+                {/*<div className="grid md:grid-cols-3 gap-6 mb-12">*/}
+                {/*    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-center">*/}
+                {/*        <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-xl flex items-center justify-center mx-auto mb-4">*/}
+                {/*            <FileText className="w-6 h-6 text-white" />*/}
+                {/*        </div>*/}
+                {/*        <h3 className="text-lg font-semibold text-gray-900 mb-2">Documentation</h3>*/}
+                {/*        <p className="text-gray-600 text-sm mb-4">*/}
+                {/*            Read our comprehensive guides and tutorials*/}
+                {/*        </p>*/}
+                {/*        <button className="text-blue-600 hover:text-blue-700 font-medium">*/}
+                {/*            View Docs →*/}
+                {/*        </button>*/}
+                {/*    </div>*/}
 
-                    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-center">
-                        <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                            <Github className="w-6 h-6 text-white" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Try Demo</h3>
-                        <p className="text-gray-600 text-sm mb-4">
-                            Test the converter with a sample repository
-                        </p>
-                        <button className="text-purple-600 hover:text-purple-700 font-medium">
-                            Start Demo →
-                        </button>
-                    </div>
+                {/*    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-center">*/}
+                {/*        <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">*/}
+                {/*            <Github className="w-6 h-6 text-white" />*/}
+                {/*        </div>*/}
+                {/*        <h3 className="text-lg font-semibold text-gray-900 mb-2">Try Demo</h3>*/}
+                {/*        <p className="text-gray-600 text-sm mb-4">*/}
+                {/*            Test the converter with a sample repository*/}
+                {/*        </p>*/}
+                {/*        <button className="text-purple-600 hover:text-purple-700 font-medium">*/}
+                {/*            Start Demo →*/}
+                {/*        </button>*/}
+                {/*    </div>*/}
 
-                    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-center">
-                        <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                            <HelpCircle className="w-6 h-6 text-white" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Contact Support</h3>
-                        <p className="text-gray-600 text-sm mb-4">
-                            Get help from our friendly support team
-                        </p>
-                        <button className="text-orange-600 hover:text-orange-700 font-medium">
-                            Get Help →
-                        </button>
-                    </div>
-                </div>
+                {/*    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-center">*/}
+                {/*        <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-4">*/}
+                {/*            <HelpCircle className="w-6 h-6 text-white" />*/}
+                {/*        </div>*/}
+                {/*        <h3 className="text-lg font-semibold text-gray-900 mb-2">Contact Support</h3>*/}
+                {/*        <p className="text-gray-600 text-sm mb-4">*/}
+                {/*            Get help from our friendly support team*/}
+                {/*        </p>*/}
+                {/*        <button className="text-orange-600 hover:text-orange-700 font-medium">*/}
+                {/*            Get Help →*/}
+                {/*        </button>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
                 {/* Still Need Help */}
                 <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl p-8 text-center text-white">
@@ -286,9 +286,9 @@ const GitDocsFAQ = () => {
                         <button className="bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300">
                             Contact Support
                         </button>
-                        <button className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-colors duration-300">
-                            Schedule a Call
-                        </button>
+                        {/*<button className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-colors duration-300">*/}
+                        {/*    Schedule a Call*/}
+                        {/*</button>*/}
                     </div>
                 </div>
             </div>

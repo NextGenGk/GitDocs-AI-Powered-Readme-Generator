@@ -41,15 +41,17 @@ export default function RootLayout({
         >
           <SignedIn>
             <Navbar />
-            <BasicFeature />
+            <main>
+              {children}
+            </main>
           </SignedIn>
 
           <SignedOut>
             <RedirectToSignIn />
             <Navbar />
-              <main>
-                {children}
-              </main>
+            <main>
+              {children}
+            </main>
           </SignedOut>
         </body>
       </html>

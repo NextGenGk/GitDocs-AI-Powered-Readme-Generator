@@ -71,7 +71,7 @@ export function FeaturesSection() {
     ];
 
     return (
-        <section className="bg-slate-50 py-20 px-6">
+        <section className="bg-white py-20 px-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header Section */}
                 <div className="text-center mb-16">
@@ -95,16 +95,16 @@ export function FeaturesSection() {
                 </div>
 
                 {/* Bottom CTA */}
-                <div className="text-center mt-16">
-                    <div className="inline-flex flex-col sm:flex-row gap-4">
-                        <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-                            Get Started Free
-                        </button>
-                        <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-blue-500 hover:text-blue-600 transition-all duration-300">
-                            View Documentation
-                        </button>
-                    </div>
-                </div>
+                {/*<div className="text-center mt-16">*/}
+                {/*    <div className="inline-flex flex-col sm:flex-row gap-4">*/}
+                {/*        <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">*/}
+                {/*            Get Started Free*/}
+                {/*        </button>*/}
+                {/*        <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-blue-500 hover:text-blue-600 transition-all duration-300">*/}
+                {/*            View Documentation*/}
+                {/*        </button>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </div>
         </section>
     );
