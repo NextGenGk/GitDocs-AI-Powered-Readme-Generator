@@ -283,7 +283,10 @@ const GitDocsFAQ = () => {
                         Our support team is here to help you succeed with GitHub to Markdown Converter.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button className="bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300">
+                        <button
+                            onClick={() => window.open('https://github.com/NextGenGk/', '_blank')}
+                            className="bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300"
+                        >
                             Contact Support
                         </button>
                         {/*<button className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-colors duration-300">*/}
