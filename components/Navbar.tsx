@@ -27,7 +27,7 @@ const Navbar = () => {
                 <NavItems />
                 <SignedOut>
                     <SignInButton>
-                        <button className="border border-white text-white hover:bg-white hover:text-black transition-colors rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer">Sign In</button>
+                        <button className="border border-white bg-black text-white transition-colors rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer">Sign In</button>
                     </SignInButton>
                 </SignedOut>
                 <SignedIn>
