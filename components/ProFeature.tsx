@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Github, FileText, AlertCircle, CheckCircle, Loader2, Download, Copy, RotateCcw } from 'lucide-react';
+import { Github, FileText, AlertCircle, CheckCircle, Loader2, Download, Copy, RotateCcw, Star } from 'lucide-react';
 
 // shadcn/ui components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -33,10 +33,6 @@ export default function ReadmeGeneratorPage() {
         remaining: 50,
         isLimitReached: false
     });
-
-    const updateUsageInfo = (newUsageInfo: UsageInfo) => {
-        setUsageInfo(newUsageInfo);
-    };
 
     const handleGenerate = async () => {
         if (!githubUrl.trim()) {
@@ -72,7 +68,7 @@ export default function ReadmeGeneratorPage() {
                     remaining: usageInfo.remaining - 1,
                     isLimitReached: usageInfo.generationsUsed + 1 >= 50
                 };
-                updateUsageInfo(newUsageInfo);
+                setUsageInfo(newUsageInfo);
             } else {
                 setError(data.error || 'Failed to generate README');
             }
@@ -110,13 +106,12 @@ export default function ReadmeGeneratorPage() {
     };
 
     const resetUsage = () => {
-        const resetUsageInfo = {
+        setUsageInfo({
             generationsUsed: 0,
             maxGenerations: 50,
             remaining: 50,
             isLimitReached: false
-        };
-        updateUsageInfo(resetUsageInfo);
+        });
         setError('');
         setMarkdown('');
     };
@@ -128,91 +123,37 @@ export default function ReadmeGeneratorPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+        <div className="min-h-screen py-12">
             <div className="container mx-auto px-4 py-8 md:py-16 max-w-7xl">
                 {/* Hero Section */}
                 <div className="text-center mb-8 md:mb-12 space-y-4">
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                        You Code. We Document.
+                    <Badge variant="outline" className="text-sm px-4 py-1 border-primary/30 bg-primary/5 text-primary mb-4">
+                        PRO PLAN
+                    </Badge>
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                        Pro Documentation Generator
                     </h1>
                     <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                        Turn GitHub repos into production-grade documentation — in seconds, not hours.
+                        Unlimited documentation generation with advanced features.
                     </p>
                 </div>
 
-                {/* Usage Tracking Card */}
-                <Card className="mb-6 md:mb-8">
-                    <CardHeader>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                                {usageInfo.isLimitReached ? (
-                                    <AlertCircle className="h-5 w-5 text-destructive" />
-                                ) : (
-                                    <CheckCircle className="h-5 w-5 text-green-600" />
-                                )}
-                                <div>
-                                    <CardTitle className="text-lg">Session Usage Limit</CardTitle>
-                                    <CardDescription>Track your README generations per session</CardDescription>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <Badge variant={getUsageVariant()} className="text-lg px-3 py-1">
-                                    {usageInfo.remaining}/{usageInfo.maxGenerations}
-                                </Badge>
-                                <p className="text-xs text-muted-foreground mt-1">Remaining</p>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex justify-between text-sm text-muted-foreground">
-                            <span>Generations Used</span>
-                            <span>{usageInfo.generationsUsed} of {usageInfo.maxGenerations}</span>
-                        </div>
-                        
-                        <Progress 
-                            value={(usageInfo.generationsUsed / usageInfo.maxGenerations) * 100} 
-                            className="w-full"
-                        />
-
-                        {usageInfo.isLimitReached && (
-                            <>
-                                <Separator />
-                                <Alert variant="destructive">
-                                    <AlertCircle className="h-4 w-4" />
-                                    <AlertTitle>Session Limit Reached!</AlertTitle>
-                                    <AlertDescription className="flex items-center justify-between mt-2">
-                                        <span>You have used all {usageInfo.maxGenerations} available generations.</span>
-                                        <Button
-                                            onClick={resetUsage}
-                                            variant="outline"
-                                            size="sm"
-                                            className="ml-4"
-                                        >
-                                            <RotateCcw className="mr-2 h-3 w-3" />
-                                            Reset Session
-                                        </Button>
-                                    </AlertDescription>
-                                </Alert>
-                            </>
-                        )}
-                    </CardContent>
-                </Card>
-
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                     {/* Input Section */}
-                    <Card className="w-full">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                    <Card className="w-full shadow-lg border-primary/20 hover:border-primary/30 transition-all duration-300 overflow-hidden">
+                        <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-xl z-0"></div>
+                        <CardHeader className="relative z-10 bg-muted/30 border-b border-primary/10">
+                            <CardTitle className="flex items-center gap-2 text-primary">
                                 <Github className="h-5 w-5" />
-                                Generate README
+                                Generate Pro Documentation
                             </CardTitle>
                             <CardDescription>
                                 Enter your GitHub repository URL to generate comprehensive documentation
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
+                        <CardContent className="space-y-6 pt-6 relative z-10">
                             <div className="space-y-2">
-                                <Label htmlFor="github-url">GitHub Repository URL</Label>
+                                <Label htmlFor="github-url" className="text-primary/90">GitHub Repository URL</Label>
                                 <Input
                                     id="github-url"
                                     type="url"
@@ -220,14 +161,14 @@ export default function ReadmeGeneratorPage() {
                                     onChange={(e) => setGithubUrl(e.target.value)}
                                     placeholder="https://github.com/username/repository"
                                     disabled={loading || usageInfo.isLimitReached}
-                                    className="w-full"
+                                    className="w-full focus:ring-primary focus:border-primary/30 bg-muted/10"
                                 />
                             </div>
 
                             <Button
                                 onClick={handleGenerate}
                                 disabled={loading || usageInfo.isLimitReached}
-                                className="w-full"
+                                className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-600 transition-all duration-300"
                                 size="lg"
                             >
                                 {loading ? (
@@ -244,7 +185,7 @@ export default function ReadmeGeneratorPage() {
                             </Button>
 
                             {error && (
-                                <Alert variant="destructive">
+                                <Alert variant="destructive" className="border-destructive/30 bg-destructive/5">
                                     <AlertCircle className="h-4 w-4" />
                                     <AlertDescription>{error}</AlertDescription>
                                 </Alert>
@@ -253,13 +194,14 @@ export default function ReadmeGeneratorPage() {
                     </Card>
 
                     {/* Output Section */}
-                    <Card className="w-full">
-                        <CardHeader>
+                    <Card className="w-full shadow-lg border-primary/20 hover:border-primary/30 transition-all duration-300 overflow-hidden">
+                        <div className="absolute bottom-0 right-0 w-32 h-32 bg-primary/5 rounded-full translate-y-1/2 translate-x-1/2 blur-xl z-0"></div>
+                        <CardHeader className="relative z-10 bg-muted/30 border-b border-primary/10">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <CardTitle>Generated README</CardTitle>
+                                    <CardTitle className="text-primary">Generated README</CardTitle>
                                     <CardDescription>
-                                        Your generated README markdown content
+                                        Your pro-quality README markdown content
                                     </CardDescription>
                                 </div>
                                 {markdown && (
@@ -268,6 +210,7 @@ export default function ReadmeGeneratorPage() {
                                             onClick={copyToClipboard}
                                             variant="outline"
                                             size="sm"
+                                            className="border-primary/30 hover:bg-primary/10"
                                         >
                                             <Copy className="mr-2 h-3 w-3" />
                                             {copySuccess ? 'Copied!' : 'Copy'}
@@ -276,6 +219,7 @@ export default function ReadmeGeneratorPage() {
                                             onClick={downloadReadme}
                                             variant="outline"
                                             size="sm"
+                                            className="border-primary/30 hover:bg-primary/10"
                                         >
                                             <Download className="mr-2 h-3 w-3" />
                                             Download
@@ -284,19 +228,22 @@ export default function ReadmeGeneratorPage() {
                                 )}
                             </div>
                         </CardHeader>
-                        <CardContent>
-                            <div className="h-64 md:h-80 lg:h-96 border rounded-md overflow-hidden">
+                        <CardContent className="relative z-10">
+                            <div className="h-64 md:h-80 lg:h-96 border rounded-md overflow-hidden bg-muted/10 shadow-inner">
                                 {markdown ? (
                                     <Textarea
                                         value={markdown}
                                         readOnly
-                                        className="w-full h-full font-mono text-sm resize-none border-0 focus-visible:ring-0"
+                                        className="w-full h-full font-mono text-sm resize-none border-0 focus-visible:ring-0 bg-transparent"
                                     />
                                 ) : (
                                     <div className="flex items-center justify-center h-full text-muted-foreground">
                                         <div className="text-center space-y-3">
                                             <FileText className="h-12 w-12 mx-auto opacity-50" />
                                             <p>Generated README will appear here</p>
+                                            <Badge variant="outline" className="mx-auto mt-2 bg-primary/5 text-primary border-primary/20">
+                                                Pro Feature
+                                            </Badge>
                                         </div>
                                     </div>
                                 )}
@@ -305,16 +252,71 @@ export default function ReadmeGeneratorPage() {
                     </Card>
                 </div>
 
-                {/* Footer Info */}
-                <Card className="mt-6 md:mt-8">
-                    <CardContent className="pt-6">
-                        <div className="text-center text-muted-foreground text-sm space-y-2">
-                            <p>This service is limited to {usageInfo.maxGenerations} README generations per session to ensure fair usage.</p>
-                            <p>Refresh the page or use the reset button to start a new session.</p>
+                {/* Usage Tracking Card */}
+                <Card className="mb-6 md:mb-8 shadow-lg border-primary/20 overflow-hidden">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl z-0"></div>
+                    <CardHeader className="relative z-10 bg-muted/30 border-b border-primary/10">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-center gap-3">
+                                {usageInfo.isLimitReached ? (
+                                    <AlertCircle className="h-5 w-5 text-destructive" />
+                                ) : (
+                                    <CheckCircle className="h-5 w-5 text-green-600" />
+                                )}
+                                <div>
+                                    <CardTitle className="text-lg text-primary flex items-center gap-2">
+                                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                                        Pro Session Usage
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Enjoy expanded generation limits with your Pro plan
+                                    </CardDescription>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <Badge variant={getUsageVariant()} className="text-lg px-3 py-1">
+                                    {usageInfo.remaining}/{usageInfo.maxGenerations}
+                                </Badge>
+                                <p className="text-xs text-muted-foreground mt-1">Remaining</p>
+                            </div>
                         </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4 pt-6 relative z-10">
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                            <span>Generations Used</span>
+                            <span>{usageInfo.generationsUsed} of {usageInfo.maxGenerations}</span>
+                        </div>
+
+                        <Progress
+                            value={(usageInfo.generationsUsed / usageInfo.maxGenerations) * 100}
+                            className="w-full h-2 bg-muted/50"
+                        />
+
+                        {usageInfo.isLimitReached && (
+                            <>
+                                <Separator className="bg-primary/10" />
+                                <Alert variant="destructive" className="border-destructive/30 bg-destructive/5">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Session Limit Reached!</AlertTitle>
+                                    <AlertDescription className="flex items-center justify-between mt-2">
+                                        <span>You have used all {usageInfo.maxGenerations} available generations.</span>
+                                        <Button
+                                            onClick={resetUsage}
+                                            variant="outline"
+                                            size="sm"
+                                            className="ml-4 border-destructive/30 hover:bg-destructive/10"
+                                        >
+                                            <RotateCcw className="mr-2 h-3 w-3" />
+                                            Reset Session
+                                        </Button>
+                                    </AlertDescription>
+                                </Alert>
+                            </>
+                        )}
                     </CardContent>
                 </Card>
             </div>
         </div>
     );
 }
+

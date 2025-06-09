@@ -27,8 +27,7 @@ export default function ReadmeGeneratorPage() {
     const { has } = useAuth();
     const [planStatus, setPlanStatus] = useState({
         hasBasicPlan: true,
-        hasProPlan: false,
-        hasPremiumPlan: false
+        hasProPlan: false
     });
 
     const [githubUrl, setGithubUrl] = useState('');
@@ -47,14 +46,12 @@ export default function ReadmeGeneratorPage() {
     useEffect(() => {
         if (has) {
             const hasProPlan = has({ plan: 'pro' });
-            const hasPremiumPlan = has({ plan: 'premium' });
 
             setPlanStatus(prevStatus => {
-                if (prevStatus.hasProPlan !== hasProPlan || prevStatus.hasPremiumPlan !== hasPremiumPlan) {
+                if (prevStatus.hasProPlan !== hasProPlan) {
                     return {
                         hasBasicPlan: true,
-                        hasProPlan,
-                        hasPremiumPlan
+                        hasProPlan
                     };
                 }
                 return prevStatus;
@@ -159,25 +156,27 @@ export default function ReadmeGeneratorPage() {
         return 'bg-primary';
     };
 
-    if (planStatus.hasBasicPlan) {
+    if (planStatus.hasProPlan) {
+        return <ProFeature />;
+    } else if (planStatus.hasBasicPlan) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+            <div className="min-h-screen py-12">
                 {/* Hero Section */}
                 <div className="container mx-auto px-4 py-8 md:py-16">
                     <div className="text-center mb-8 md:mb-12 space-y-4">
-                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                            You Code. We Document.
+                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-primary">
+                            Basic Plan Features
                         </h1>
                         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                            Turn GitHub repos into production-grade documentation — in seconds, not hours.
+                            Get started with GitHub documentation generation. Upgrade to Pro for unlimited access.
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 max-w-7xl mx-auto">
                         {/* Input Section */}
-                        <Card className="w-full">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
+                        <Card className="w-full shadow-lg border-primary/20 hover:border-primary/30 transition-all duration-300">
+                            <CardHeader className="bg-muted/30">
+                                <CardTitle className="flex items-center gap-2 text-primary">
                                     <Github className="h-5 w-5" />
                                     Generate README
                                 </CardTitle>
@@ -185,7 +184,7 @@ export default function ReadmeGeneratorPage() {
                                     Enter your GitHub repository URL to generate a comprehensive README
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-6">
+                            <CardContent className="space-y-6 pt-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="github-url">GitHub Repository URL</Label>
                                     <Input
@@ -195,14 +194,14 @@ export default function ReadmeGeneratorPage() {
                                         onChange={(e) => setGithubUrl(e.target.value)}
                                         placeholder="https://github.com/username/repository"
                                         disabled={loading || usageInfo.isLimitReached}
-                                        className="w-full"
+                                        className="w-full focus:ring-primary"
                                     />
                                 </div>
 
                                 <Button
                                     onClick={handleGenerate}
                                     disabled={loading || usageInfo.isLimitReached}
-                                    className="w-full"
+                                    className="w-full bg-primary hover:bg-primary/90"
                                     size="lg"
                                 >
                                     {loading ? (
@@ -228,11 +227,11 @@ export default function ReadmeGeneratorPage() {
                         </Card>
 
                         {/* Output Section */}
-                        <Card className="w-full">
-                            <CardHeader>
+                        <Card className="w-full shadow-lg border-primary/20 hover:border-primary/30 transition-all duration-300">
+                            <CardHeader className="bg-muted/30">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <CardTitle>Generated README</CardTitle>
+                                        <CardTitle className="text-primary">Generated README</CardTitle>
                                         <CardDescription>
                                             Your generated README markdown content
                                         </CardDescription>
@@ -242,6 +241,7 @@ export default function ReadmeGeneratorPage() {
                                             onClick={copyToClipboard}
                                             variant="outline"
                                             size="sm"
+                                            className="border-primary/30 hover:bg-primary/10"
                                         >
                                             <Copy className="mr-2 h-4 w-4" />
                                             {copySuccess ? 'Copied!' : 'Copy'}
@@ -250,12 +250,12 @@ export default function ReadmeGeneratorPage() {
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                <div className="h-64 md:h-80 lg:h-96 border rounded-md overflow-hidden">
+                                <div className="h-64 md:h-80 lg:h-96 border rounded-md overflow-hidden bg-muted/10 shadow-inner">
                                     {markdown ? (
                                         <Textarea
                                             value={markdown}
                                             readOnly
-                                            className="w-full h-full font-mono text-sm resize-none border-0 focus-visible:ring-0"
+                                            className="w-full h-full font-mono text-sm resize-none border-0 focus-visible:ring-0 bg-transparent"
                                         />
                                     ) : (
                                         <div className="flex items-center justify-center h-full text-muted-foreground">
@@ -271,8 +271,8 @@ export default function ReadmeGeneratorPage() {
                     </div>
 
                     {/* Usage Tracking Card */}
-                    <Card className="mt-6 md:mt-8 max-w-7xl mx-auto">
-                        <CardHeader>
+                    <Card className="mt-6 md:mt-8 max-w-7xl mx-auto shadow-lg border-primary/20">
+                        <CardHeader className="bg-muted/30">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                 <div className="flex items-center gap-3">
                                     {usageInfo.isLimitReached ? (
@@ -281,7 +281,7 @@ export default function ReadmeGeneratorPage() {
                                         <CheckCircle className="h-5 w-5 text-green-600" />
                                     )}
                                     <div>
-                                        <CardTitle className="text-lg">Usage Tracking</CardTitle>
+                                        <CardTitle className="text-lg text-primary">Usage Tracking</CardTitle>
                                         <CardDescription>Monitor your README generations</CardDescription>
                                     </div>
                                 </div>
@@ -293,7 +293,7 @@ export default function ReadmeGeneratorPage() {
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-4 pt-6">
                             <div className="flex justify-between text-sm text-muted-foreground">
                                 <span>Generations Used</span>
                                 <span>{usageInfo.generationsUsed} of {usageInfo.maxGenerations}</span>
@@ -309,8 +309,16 @@ export default function ReadmeGeneratorPage() {
                                     <Separator />
                                     <Alert variant="destructive">
                                         <AlertCircle className="h-4 w-4" />
-                                        <AlertDescription>
-                                            Generation limit reached! You have used all {usageInfo.maxGenerations} available generations.
+                                        <AlertDescription className="flex items-center justify-between">
+                                            <span>Generation limit reached! You have used all {usageInfo.maxGenerations} available generations.</span>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="ml-4 border-destructive/30 hover:bg-destructive/10"
+                                                onClick={() => window.location.href = '/pricing'}
+                                            >
+                                                Upgrade to Pro
+                                            </Button>
                                         </AlertDescription>
                                     </Alert>
                                 </>
@@ -320,20 +328,27 @@ export default function ReadmeGeneratorPage() {
                 </div>
             </div>
         );
-    } else if (planStatus.hasProPlan) {
-        return <ProFeature />;
     } else {
         return (
             <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4">
-                <Card className="max-w-md w-full">
-                    <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Access Denied</CardTitle>
+                <Card className="max-w-md w-full shadow-lg border-destructive/20">
+                    <CardHeader className="text-center bg-muted/30">
+                        <CardTitle className="text-2xl text-destructive">Access Denied</CardTitle>
                         <CardDescription>
-                            Please upgrade to a Pro or Premium plan to access this feature.
+                            Please upgrade to a Pro plan to access this feature.
                         </CardDescription>
                     </CardHeader>
+                    <CardContent className="pt-6 flex justify-center">
+                        <Button
+                            onClick={() => window.location.href = '/pricing'}
+                            className="bg-primary hover:bg-primary/90"
+                        >
+                            View Pricing Plans
+                        </Button>
+                    </CardContent>
                 </Card>
             </div>
         );
     }
 }
+
