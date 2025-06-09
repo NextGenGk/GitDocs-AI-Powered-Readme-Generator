@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navItems = [
+    { label : "Dashboard", href: "/dashboard" },
   { label: "Features", href: "/features" },
   { label: "Pricing", href: "/pricing" },
   { label: "FAQ's", href: "/faqs" },
@@ -29,7 +30,7 @@ const NavItems = ({ isMobile = false }: NavItemsProps) => {
                 href={href}
                 key={label}
                 className={cn(
-                    "text-primary hover:text-gray-900 transition-colors",
+                    "text-primary hover:text-white transition-colors",
                     isMobile
                         ? "text-lg py-2"
                         : "text-[15px] sm:text-[17px] px-1",
