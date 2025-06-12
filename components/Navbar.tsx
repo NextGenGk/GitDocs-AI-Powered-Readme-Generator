@@ -2,78 +2,89 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
+import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { MobileNav } from "./NavItems";
+import { cn } from "@/lib/utils";
 import NavItems from "./NavItems";
-import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
 const Navbar = () => {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
     return (
-        <nav className="navbar flex justify-between items-center p-4 bg-transparent absolute top-0 left-0 right-0 z-10">
-            <div className="flex-shrink-0">
-                <Link href="/">
-                    <div className="flex items-center justify-center gap-2.5 cursor-pointer">
-                        <Image src="/logo.png" alt="Logo" width={38} height={36} />
-                        <span className="text-2xl sm:text-3xl font-semibold text-primary hover:text-gray-900 transition-colors">
-                            GitDocs <span className="text-4xl text-primary font-semibold"> . </span>
-                        </span>
+        <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+            {/* Navbar Background with Blur Effect */}
+            <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-200/80 dark:border-gray-800/80"></div>
+
+            <div className="container mx-auto px-4 relative">
+                <nav className="flex items-center justify-between py-4">
+                    {/* Logo Section */}
+                    <div className="flex-shrink-0 relative z-10">
+                        <Link href="/" className="flex items-center gap-2.5 group">
+                            <div className="relative overflow-hidden rounded-xl p-1 bg-gradient-to-br from-primary/20 to-purple-500/20 group-hover:from-primary/30 group-hover:to-purple-500/30 transition-all duration-300">
+                                <Image
+                                    src="/logo.png"
+                                    alt="GitDocs Logo"
+                                    width={38}
+                                    height={36}
+                                    className="transform group-hover:scale-110 transition-transform duration-300"
+                                />
+                            </div>
+                            <div className="flex items-baseline">
+                                <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                                    GitDocs
+                                </span>
+                                <span className="text-4xl text-primary font-bold ml-0.5">.</span>
+                            </div>
+                        </Link>
                     </div>
-                </Link>
-            </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
-                <NavItems />
-                <SignedOut>
-                    <SignInButton>
-                        <button className="border border-white bg-black text-white transition-colors rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer">Sign In</button>
-                    </SignInButton>
-                </SignedOut>
-                <SignedIn>
-                    <UserButton />
-                </SignedIn>
-            </div>
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center gap-8">
+                        <NavItems />
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-                <button
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="text-white p-2"
-                    aria-label="Toggle menu"
-                >
-                    {mobileMenuOpen ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    )}
-                </button>
-            </div>
-
-            {/* Mobile Menu */}
-            {mobileMenuOpen && (
-                <div className="absolute top-full left-0 right-0 bg-black bg-opacity-90 md:hidden">
-                    <div className="flex flex-col p-4">
-                        <NavItems isMobile={true} />
-                        <div className="mt-4">
+                        <div className="flex items-center gap-4">
                             <SignedOut>
+                                <Link
+                                    href="/features"
+                                    className="text-gray-700 hover:text-primary px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                                >
+                                    Features
+                                </Link>
+
                                 <SignInButton>
-                                    <button className="border border-white text-white hover:bg-white hover:text-black transition-colors rounded-4xl px-4 py-2.5 text-sm font-semibold flex items-center gap-2 cursor-pointer w-full justify-center">Sign In</button>
+                                    <button className="bg-white text-gray-900 hover:bg-gray-100 border border-gray-300 transition-colors rounded-lg px-4 py-2 text-sm font-medium shadow-sm hover:shadow">
+                                        Sign In
+                                    </button>
                                 </SignInButton>
+
+                                <Link href="/sign-up">
+                                    <button className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 text-white transition-all rounded-lg px-4 py-2 text-sm font-medium shadow-md hover:shadow-lg">
+                                        Get Started
+                                    </button>
+                                </Link>
                             </SignedOut>
+
                             <SignedIn>
-                                <UserButton />
+                                <UserButton
+                                    afterSignOutUrl="/"
+                                    appearance={{
+                                        elements: {
+                                            avatarBox: "border-2 border-primary/20 hover:border-primary/50 transition-colors"
+                                        }
+                                    }}
+                                />
                             </SignedIn>
                         </div>
                     </div>
-                </div>
-            )}
-        </nav>
+
+                    {/* Mobile Navigation - Using Enhanced Mobile Menu */}
+                    <div className="md:hidden">
+                        <MobileNav />
+                    </div>
+                </nav>
+            </div>
+        </header>
     );
 };
 
 export default Navbar;
+
