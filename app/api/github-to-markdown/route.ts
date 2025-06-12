@@ -81,6 +81,39 @@ function incrementSessionCount(sessionId: string): number {
   return newCount;
 }
 
+// Helper function to parse request body (handles both JSON and form data)
+async function parseRequestBody(request: NextRequest): Promise<{ githubUrl: string }> {
+  const contentType = request.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
+    // Handle JSON data
+    const body = await request.json();
+    return { githubUrl: body.githubUrl };
+  } else if (contentType.includes('application/x-www-form-urlencoded')) {
+    // Handle form data
+    const formData = await request.formData();
+    const githubUrl = formData.get('githubUrl') as string;
+    return { githubUrl };
+  } else {
+    // Try to parse as text and handle URL-encoded data
+    const text = await request.text();
+
+    // Check if it's URL-encoded format like "githubUrl=..."
+    if (text.startsWith('githubUrl=')) {
+      const githubUrl = decodeURIComponent(text.split('=')[1]);
+      return { githubUrl };
+    }
+
+    // Try parsing as JSON as fallback
+    try {
+      const body = JSON.parse(text);
+      return { githubUrl: body.githubUrl };
+    } catch {
+      throw new Error('Invalid request format. Expected JSON or form data.');
+    }
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const sessionId = getSessionId(request);
@@ -113,8 +146,18 @@ export async function POST(request: NextRequest) {
       return response;
     }
 
-    const body = await request.json();
-    const { githubUrl } = body;
+    // Parse request body with improved error handling
+    let githubUrl: string;
+    try {
+      const parsedBody = await parseRequestBody(request);
+      githubUrl = parsedBody.githubUrl;
+    } catch (parseError) {
+      console.error('Error parsing request body:', parseError);
+      return NextResponse.json(
+          { error: 'Invalid request format. Please send githubUrl as JSON or form data.' },
+          { status: 400 }
+      );
+    }
 
     if (!githubUrl || !isValidGithubUrl(githubUrl)) {
       return NextResponse.json(
