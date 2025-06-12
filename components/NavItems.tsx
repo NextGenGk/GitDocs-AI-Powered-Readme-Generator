@@ -195,15 +195,15 @@ export const MobileNav = ({ className }: MobileNavProps) => {
                         <NavItems isMobile onItemClick={closeMenu} />
 
                         {/* Extra mobile menu items */}
-                        <div className="p-6 border-t border-gray-200 dark:border-gray-800 mt-auto">
-                            <Link
-                                href="/pricing"
-                                className="block w-full py-3 px-4 bg-primary hover:bg-primary/90 text-white font-medium text-center shadow-md hover:shadow-lg transition-all duration-200"
-                                onClick={closeMenu}
-                            >
-                                Upgrade to Pro
-                            </Link>
-                        </div>
+                        {/*<div className="p-6 border-t border-gray-200 dark:border-gray-800 mt-auto">*/}
+                        {/*    <Link*/}
+                        {/*        href="/pricing"*/}
+                        {/*        className="block w-full py-3 px-4 bg-primary hover:bg-primary/90 text-white font-medium text-center shadow-md hover:shadow-lg transition-all duration-200"*/}
+                        {/*        onClick={closeMenu}*/}
+                        {/*    >*/}
+                        {/*        Upgrade to Pro*/}
+                        {/*    </Link>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
             </motion.div>
