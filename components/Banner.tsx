@@ -57,25 +57,27 @@ export default function Banner() {
                 {/*<h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-violet-400 to-fuchsia-500">*/}
                 {/*    Your Code Deserves Better README.*/}
                 {/*</h1>*/}
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-black via-slate-700 to-gray-500">
+                <h1 className="text-6xl sm:text-5xl lg:text-6xl font-semibold ">
                     Your Code Deserves Better README.
                 </h1>
 
 
                 {/* Subheadline */}
-                <p className="text-base sm:text-xl md:text-2xl text-white/80 font-medium mt-4 sm:mt-6 animate-fade-in">
+                <p className="text-base font-stretch-semi-condensed sm:text-xl md:text-2xl text-white/80 font-medium mt-4 sm:mt-6 animate-fade-in">
                     Just paste your repo. We’ll do the writing magic.
                 </p>
 
                 {/* Buttons */}
                 <div className="flex justify-center items-center mt-8 sm:mt-12 animate-fade-in-up">
                     <Link href={isSignedIn ? "/dashboard" : "/sign-in"}>
-                        <Button className="px-5 py-3 sm:px-8 sm:py-4 text-sm sm:text-base font-medium bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl rounded-2xl">
+                        <Button className="px-8 py-3 sm:px-12 sm:py-4 text-sm sm:text-base font-stretch-semi-condensed bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl rounded-2xl">
                             {isSignedIn ? "Dashboard" : "Start"}
                             <ArrowRight className="ml-2 w-4 h-4" />
                         </Button>
                     </Link>
                 </div>
+
+
 
 
 
