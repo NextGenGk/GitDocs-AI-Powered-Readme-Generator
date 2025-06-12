@@ -14,64 +14,65 @@ export function FeaturesSection() {
     const features = [
         {
             title: "Built for developers",
-            description: "Built for engineers, developers, dreamers, thinkers and doers.",
+            description: "Crafted specifically for developers who want instant, professional READMEs without the hassle.",
             icon: <IconTerminal2 size={28} />,
             gradient: "from-blue-500 to-cyan-600",
             category: "Development"
         },
         {
             title: "Ease of use",
-            description: "It's as easy as using an Apple, and as expensive as buying one.",
+            description: "No setup, no configuration. Just paste your repo and get a polished README.",
             icon: <IconEaseInOut size={28} />,
             gradient: "from-emerald-500 to-teal-600",
             category: "Experience"
         },
         {
             title: "Pricing like no other",
-            description: "Our prices are best in the market. No cap, no lock, no credit card required.",
+            description: "Flexible pricing tiers with generous free limits. Pay only when you grow.",
             icon: <IconCurrencyDollar size={28} />,
             gradient: "from-amber-500 to-orange-600",
             category: "Pricing"
         },
         {
             title: "100% Uptime guarantee",
-            description: "We just cannot be taken down by anyone.",
+            description: "Your README generation won't be interrupted. Ever. We've built for scale.",
             icon: <IconCloud size={28} />,
             gradient: "from-indigo-500 to-purple-600",
             category: "Reliability"
         },
         {
             title: "Multi-tenant Architecture",
-            description: "You can simply share passwords instead of buying new seats",
+            description: "Built to support individuals, teams, and entire organizations with ease.",
             icon: <IconRouteAltLeft size={28} />,
             gradient: "from-pink-500 to-rose-600",
             category: "Architecture"
         },
         {
             title: "24/7 Customer Support",
-            description: "We are available a 100% of the time. At least our AI Agents are.",
+            description: "Have questions or issues? Our support team and AI agents are ready to help—anytime.",
             icon: <IconHelp size={28} />,
             gradient: "from-violet-500 to-purple-600",
             category: "Support"
         },
         {
             title: "Money back guarantee",
-            description: "If you don't like EveryAI, we will convince you to like us.",
+            description: "Not happy? We’ll fix it or refund you—no questions asked. But we’re sure you’ll love it.",
             icon: <IconAdjustmentsBolt size={28} />,
             gradient: "from-red-500 to-pink-600",
             category: "Guarantee"
         },
         {
             title: "And everything else",
-            description: "I just ran out of copy ideas. Accept my sincere apologies",
+            description: "From custom prompts to Markdown badges—our generator handles it all and more.",
             icon: <IconHeart size={28} />,
             gradient: "from-rose-500 to-pink-600",
             category: "Extras"
-        },
+        }
+
     ];
 
     return (
-        <section className="bg-white py-20 px-6">
+        <section className="bg-white py-38 px-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header Section */}
                 <div className="text-center mb-16">
