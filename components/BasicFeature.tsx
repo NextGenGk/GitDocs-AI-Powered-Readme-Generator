@@ -1,18 +1,15 @@
-'use client'
-
-import React, { useState } from 'react';
-import { Github, FileText, AlertCircle, CheckCircle, Loader2, Download, Copy, RotateCcw, Star } from 'lucide-react';
-
+import React from 'react';
+import {FileText, AlertCircle, CheckCircle, Github, Download, Copy, HelpCircle} from 'lucide-react';
 // shadcn/ui components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Book } from 'lucide-react';
 
 interface UsageInfo {
     generationsUsed: number;
@@ -21,175 +18,84 @@ interface UsageInfo {
     isLimitReached: boolean;
 }
 
-export default function ReadmeGeneratorPage() {
-    const [githubUrl, setGithubUrl] = useState('');
-    const [markdown, setMarkdown] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [copySuccess, setCopySuccess] = useState(false);
-    const [usageInfo, setUsageInfo] = useState<UsageInfo>({
+async function fetchUsageStatusServer(): Promise<UsageInfo> {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/github-to-markdown`, { cache: 'no-store' });
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (err) {
+        // fallback default
+    }
+    return {
         generationsUsed: 0,
         maxGenerations: 3,
         remaining: 3,
         isLimitReached: false
-    });
-
-    const handleGenerate = async () => {
-        if (!githubUrl.trim()) {
-            setError('Please enter a GitHub repository URL');
-            return;
-        }
-
-        if (usageInfo.isLimitReached) {
-            setError(`Generation limit reached. Only ${usageInfo.maxGenerations} README generations are allowed per session.`);
-            return;
-        }
-
-        setLoading(true);
-        setError('');
-        setMarkdown('');
-
-        try {
-            const response = await fetch('/api/github-to-markdown', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ githubUrl }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setMarkdown(data.markdown);
-
-                // Update usage info locally
-                const newUsageInfo = {
-                    generationsUsed: usageInfo.generationsUsed + 1,
-                    maxGenerations: 50,
-                    remaining: usageInfo.remaining - 1,
-                    isLimitReached: usageInfo.generationsUsed + 1 >= 50
-                };
-                setUsageInfo(newUsageInfo);
-            } else {
-                setError(data.error || 'Failed to generate README');
-            }
-        } catch (err) {
-            setError('Network error occurred. Please try again.');
-        } finally {
-            setLoading(false);
-        }
     };
+}
 
-    const copyToClipboard = async () => {
-        try {
-            await navigator.clipboard.writeText(markdown);
-            setCopySuccess(true);
-            setTimeout(() => setCopySuccess(false), 2000);
-        } catch (err) {
-            console.error('Failed to copy to clipboard:', err);
-        }
-    };
-
-    const downloadReadme = () => {
-        try {
-            const blob = new Blob([markdown], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'README.md';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        } catch (err) {
-            console.error('Failed to download file:', err);
-        }
-    };
-
-    const resetUsage = () => {
-        setUsageInfo({
-            generationsUsed: 0,
-            maxGenerations: 3,
-            remaining: 3,
-            isLimitReached: false
-        });
-        setError('');
-        setMarkdown('');
-    };
-
-    const getUsageVariant = () => {
-        if (usageInfo.isLimitReached) return 'destructive';
-        if (usageInfo.remaining <= 10) return 'secondary';
-        return 'default';
-    };
+export default async function BasicFeature() {
+    const usageInfo = await fetchUsageStatusServer();
 
     return (
-        <div className="min-h-screen py-12">
-            <div className="container mx-auto px-4 py-8 md:py-16 max-w-7xl">
+        <div className="min-h-screen py-22 bg-white relative overflow-hidden">
+            {/* Background Elements */}
+            <div className="absolute top-40 left-10 w-72 h-72 rounded-full blur-3xl -z-10"></div>
+            <div className="absolute bottom-40 right-10 w-80 h-80 rounded-full blur-3xl -z-10"></div>
+
+            <div className="container mx-auto px-4 py-8 md:py-16">
                 {/* Hero Section */}
                 <div className="text-center mb-8 md:mb-12 space-y-4">
-                    <Badge variant="outline" className="text-sm px-4 py-1 border-primary/30 bg-primary/5 text-primary mb-4">
-                    BEST README GENERATOR
-                    </Badge>
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                        <Book className="w-4 h-4 " />
+                        You Code We Document!!
+                    </div>
                     <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-                        Readme Documentation Generator
+                        Documentation Generator
                     </h1>
                     <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                        Unlimited documentation generation with advanced features.
+                        Transform your GitHub repositories into beautiful, comprehensive documentation in seconds.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 max-w-7xl mx-auto">
                     {/* Input Section */}
                     <Card className="w-full shadow-lg border-primary/20 hover:border-primary/30 transition-all duration-300 overflow-hidden">
                         <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-xl z-0"></div>
                         <CardHeader className="relative z-10 bg-muted/30 border-b border-primary/10">
                             <CardTitle className="flex items-center gap-2 text-primary">
                                 <Github className="h-5 w-5" />
-                                Generate Pro Documentation
+                                Generate Documentation
                             </CardTitle>
                             <CardDescription>
-                                Enter your GitHub repository URL to generate comprehensive documentation
+                                Enter your GitHub repository URL to generate a comprehensive README
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6 pt-6 relative z-10">
-                            <div className="space-y-2">
-                                <Label htmlFor="github-url" className="text-primary/90">GitHub Repository URL</Label>
-                                <Input
-                                    id="github-url"
-                                    type="url"
-                                    value={githubUrl}
-                                    onChange={(e) => setGithubUrl(e.target.value)}
-                                    placeholder="https://github.com/username/repository"
-                                    disabled={loading || usageInfo.isLimitReached}
-                                    className="w-full focus:ring-primary focus:border-primary/30 bg-muted/10"
-                                />
-                            </div>
-
-                            <Button
-                                onClick={handleGenerate}
-                                disabled={loading || usageInfo.isLimitReached}
-                                className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-600 transition-all duration-300"
-                                size="lg"
-                            >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Generating...
-                                    </>
-                                ) : (
-                                    <>
-                                        <FileText className="mr-2 h-4 w-4" />
-                                        Generate README
-                                    </>
-                                )}
-                            </Button>
-
-                            {error && (
-                                <Alert variant="destructive" className="border-destructive/30 bg-destructive/5">
-                                    <AlertCircle className="h-4 w-4" />
-                                    <AlertDescription>{error}</AlertDescription>
-                                </Alert>
-                            )}
+                            <form action="/api/github-to-markdown" method="POST" className="space-y-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="github-url" className="text-primary/90">GitHub Repository URL</Label>
+                                    <Input
+                                        id="github-url"
+                                        name="githubUrl"
+                                        type="url"
+                                        placeholder="https://github.com/username/repository"
+                                        className="w-full focus:ring-primary focus:border-primary/30 bg-muted/10"
+                                        required
+                                        disabled={usageInfo.isLimitReached}
+                                    />
+                                </div>
+                                <Button
+                                    type="submit"
+                                    disabled={usageInfo.isLimitReached}
+                                    className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-600 transition-all duration-300"
+                                    size="lg"
+                                >
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    Generate README
+                                </Button>
+                            </form>
                         </CardContent>
                     </Card>
 
@@ -201,59 +107,47 @@ export default function ReadmeGeneratorPage() {
                                 <div>
                                     <CardTitle className="text-primary">Generated README</CardTitle>
                                     <CardDescription>
-                                        Your pro-quality README markdown content
+                                        Your generated README markdown content
                                     </CardDescription>
                                 </div>
-                                {markdown && (
-                                    <div className="flex gap-2">
-                                        <Button
-                                            onClick={copyToClipboard}
-                                            variant="outline"
-                                            size="sm"
-                                            className="border-primary/30 hover:bg-primary/10"
-                                        >
-                                            <Copy className="mr-2 h-3 w-3" />
-                                            {copySuccess ? 'Copied!' : 'Copy'}
-                                        </Button>
-                                        <Button
-                                            onClick={downloadReadme}
-                                            variant="outline"
-                                            size="sm"
-                                            className="border-primary/30 hover:bg-primary/10"
-                                        >
-                                            <Download className="mr-2 h-3 w-3" />
-                                            Download
-                                        </Button>
-                                    </div>
-                                )}
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="border-primary/30 hover:bg-primary/10"
+                                    >
+                                        <Copy className="mr-2 h-3 w-3" />
+                                        Copy
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="border-primary/30 hover:bg-primary/10"
+                                    >
+                                        <Download className="mr-2 h-3 w-3" />
+                                        Download
+                                    </Button>
+                                </div>
                             </div>
                         </CardHeader>
                         <CardContent className="relative z-10">
                             <div className="h-64 md:h-80 lg:h-96 border rounded-md overflow-hidden bg-muted/10 shadow-inner">
-                                {markdown ? (
-                                    <Textarea
-                                        value={markdown}
-                                        readOnly
-                                        className="w-full h-full font-mono text-sm resize-none border-0 focus-visible:ring-0 bg-transparent"
-                                    />
-                                ) : (
-                                    <div className="flex items-center justify-center h-full text-muted-foreground">
-                                        <div className="text-center space-y-3">
-                                            <FileText className="h-12 w-12 mx-auto opacity-50" />
-                                            <p>Generated README will appear here</p>
-                                            <Badge variant="outline" className="mx-auto mt-2 bg-primary/5 text-primary border-primary/20">
-                                                Pro Feature
-                                            </Badge>
-                                        </div>
+                                <div className="flex items-center justify-center h-full text-muted-foreground">
+                                    <div className="text-center space-y-3">
+                                        <FileText className="h-12 w-12 mx-auto opacity-50" />
+                                        <p>Generated README will appear here after submission</p>
+                                        <Badge variant="outline" className="mx-auto mt-2 bg-primary/5 text-primary border-primary/20">
+                                            Markdown Preview
+                                        </Badge>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Usage Tracking Card */}
-                <Card className="mb-6 md:mb-8 shadow-lg border-primary/20 overflow-hidden">
+                <Card className="mt-8 mb-6 md:mt-12 md:mb-8 max-w-7xl mx-auto shadow-lg border-primary/20 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-xl z-0"></div>
                     <CardHeader className="relative z-10 bg-muted/30 border-b border-primary/10">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -264,17 +158,14 @@ export default function ReadmeGeneratorPage() {
                                     <CheckCircle className="h-5 w-5 text-green-600" />
                                 )}
                                 <div>
-                                    <CardTitle className="text-lg text-primary flex items-center gap-2">
-                                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                                        Pro Session Usage
-                                    </CardTitle>
+                                    <CardTitle className="text-lg text-primary">Usage Tracking</CardTitle>
                                     <CardDescription>
-                                        Enjoy expanded generation limits with your Pro plan
+                                        Monitor your README generations
                                     </CardDescription>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <Badge variant={getUsageVariant()} className="text-lg px-3 py-1">
+                                <Badge variant={usageInfo.isLimitReached ? 'destructive' : usageInfo.remaining === 1 ? 'secondary' : 'default'} className="text-lg px-3 py-1">
                                     {usageInfo.remaining}/{usageInfo.maxGenerations}
                                 </Badge>
                                 <p className="text-xs text-muted-foreground mt-1">Remaining</p>
@@ -297,17 +188,15 @@ export default function ReadmeGeneratorPage() {
                                 <Separator className="bg-primary/10" />
                                 <Alert variant="destructive" className="border-destructive/30 bg-destructive/5">
                                     <AlertCircle className="h-4 w-4" />
-                                    <AlertTitle>Session Limit Reached!</AlertTitle>
-                                    <AlertDescription className="flex items-center justify-between mt-2">
-                                        <span>You have used all {usageInfo.maxGenerations} available generations.</span>
+                                    <AlertDescription className="flex items-center justify-between">
+                                        <span>Generation limit reached! You have used all {usageInfo.maxGenerations} available generations.</span>
                                         <Button
-                                            onClick={resetUsage}
                                             variant="outline"
                                             size="sm"
                                             className="ml-4 border-destructive/30 hover:bg-destructive/10"
+                                            onClick={() => window.location.href = '/pricing'}
                                         >
-                                            <RotateCcw className="mr-2 h-3 w-3" />
-                                            Reset Session
+                                            Upgrade to Pro
                                         </Button>
                                     </AlertDescription>
                                 </Alert>
@@ -319,3 +208,4 @@ export default function ReadmeGeneratorPage() {
         </div>
     );
 }
+
