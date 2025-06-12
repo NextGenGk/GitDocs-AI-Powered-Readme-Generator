@@ -131,7 +131,7 @@ const GitDocsFAQ = () => {
     });
 
     return (
-        <div className="min-h-screen bg-white py-16 px-4">
+        <div className="min-h-screen bg-white py-38 px-4">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">
