@@ -11,6 +11,7 @@ import {
 } from '@clerk/nextjs'
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import {Analytics} from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +24,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GitDocs - AI-Powered README Generator",
+  title: "GitDocs - README Generator using AI Agents",
   description: "Generate comprehensive README.md files for your GitHub repositories using AI",
   viewport: "width=device-width, initial-scale=1.0",
 };
@@ -36,6 +37,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
+        <head>
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+        </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}
         >
@@ -51,6 +55,7 @@ export default function RootLayout({
             <Navbar />
             <main>
               {children}
+              <Analytics />
             </main>
           </SignedOut>
         </body>
