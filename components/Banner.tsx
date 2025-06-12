@@ -10,14 +10,15 @@ import { Sparkles, ArrowRight } from "lucide-react";
 
 export default function Banner() {
     const { user, isSignedIn } = useUser();
+
     const router = useRouter();
 
     // Redirect to dashboard if logged in
-    useEffect(() => {
-        if (isSignedIn) {
-            router.push('/dashboard');
-        }
-    }, [isSignedIn, router]);
+    // useEffect(() => {
+    //     if (isSignedIn) {
+    //         router.push('/dashboard');
+    //     }
+    // }, [isSignedIn, router]);
 
     return (
         <div className="relative w-full min-h-[100svh] overflow-hidden">
@@ -53,10 +54,13 @@ export default function Banner() {
                 </div>
 
                 {/* Headline */}
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-violet-400 to-fuchsia-500">
-
+                {/*<h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-violet-400 to-fuchsia-500">*/}
+                {/*    Your Code Deserves Better README.*/}
+                {/*</h1>*/}
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-black via-slate-700 to-gray-500">
                     Your Code Deserves Better README.
                 </h1>
+
 
                 {/* Subheadline */}
                 <p className="text-base sm:text-xl md:text-2xl text-white/80 font-medium mt-4 sm:mt-6 animate-fade-in">
@@ -64,14 +68,16 @@ export default function Banner() {
                 </p>
 
                 {/* Buttons */}
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8 sm:mt-12 animate-fade-in-up">
-                    <Link href="/sign-in">
-                        <Button className="pt-3 pr-5 pb-3 pl-5 sm:pt-4 sm:pr-8 sm:pb-4 sm:pl-8 text-sm sm:text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl rounded-lg">
-                            Get Started
+                <div className="flex justify-center items-center mt-8 sm:mt-12 animate-fade-in-up">
+                    <Link href={isSignedIn ? "/dashboard" : "/sign-in"}>
+                        <Button className="px-5 py-3 sm:px-8 sm:py-4 text-sm sm:text-base font-medium bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl rounded-2xl">
+                            {isSignedIn ? "Dashboard" : "Start"}
                             <ArrowRight className="ml-2 w-4 h-4" />
                         </Button>
                     </Link>
                 </div>
+
+
 
                 {/* Scroll Indicator */}
                 <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
