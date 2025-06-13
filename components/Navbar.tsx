@@ -43,13 +43,6 @@ const Navbar = () => {
 
                         <div className="flex items-center gap-4">
                             <SignedOut>
-                                <Link
-                                    href="/features"
-                                    className="text-gray-700 hover:text-primary px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-                                >
-                                    Features
-                                </Link>
-
                                 <SignInButton>
                                     <button className="bg-white text-gray-900 hover:bg-gray-100 border border-gray-300 transition-colors rounded-lg px-4 py-2 text-sm font-medium shadow-sm hover:shadow">
                                         Sign In
