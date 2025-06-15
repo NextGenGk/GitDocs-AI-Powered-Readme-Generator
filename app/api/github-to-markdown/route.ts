@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const PROMPT = `You are a professional technical writer and open-source maintainer. Given a GitHub repository link, generate a complete and polished \`README.md\` file in Markdown format.
 
@@ -25,61 +31,8 @@ For markdown badges use this repo: https://github.com/Ileriayo/markdown-badges
 
 Output should be in valid Markdown and follow good formatting practices with proper headers, code blocks, and links.`;
 
-// Store sessions with their generation counts
-const sessionCounts = new Map<string, number>();
-
-// Generation limits for different plans
-const BASIC_PLAN_LIMIT = 2;
-const PRO_PLAN_LIMIT = 50;
-const PREMIUM_PLAN_LIMIT = 100;
-
-// Function to get the generation limit based on user's plan
-async function getGenerationLimit(request: NextRequest): Promise<number> {
-  try {
-    const { has } = await auth();
-
-    if (has({ plan: 'premium' })) {
-      return PREMIUM_PLAN_LIMIT;
-    } else if (has({ plan: 'pro' })) {
-      return PRO_PLAN_LIMIT;
-    } else {
-      // Default to basic plan
-      return BASIC_PLAN_LIMIT;
-    }
-  } catch (error) {
-    // If auth fails or user is not authenticated, return basic plan limit
-    return BASIC_PLAN_LIMIT;
-  }
-}
-
-// Clean up old sessions (optional - prevents memory leaks)
-const SESSION_CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 hour
-setInterval(() => {
-  // In a real app, you might want to track session timestamps and clean up old ones
-  // For now, we'll keep it simple
-}, SESSION_CLEANUP_INTERVAL);
-
-function getSessionId(request: NextRequest): string {
-  // Try to get session ID from cookie
-  const sessionCookie = request.cookies.get('readme-session-id');
-  if (sessionCookie) {
-    return sessionCookie.value;
-  }
-
-  // Generate new session ID
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
-}
-
-function getSessionCount(sessionId: string): number {
-  return sessionCounts.get(sessionId) || 0;
-}
-
-function incrementSessionCount(sessionId: string): number {
-  const currentCount = getSessionCount(sessionId);
-  const newCount = currentCount + 1;
-  sessionCounts.set(sessionId, newCount);
-  return newCount;
-}
+// Default generation limit (you can adjust this value)
+const DEFAULT_GENERATION_LIMIT = 3;
 
 // Helper function to parse request body (handles both JSON and form data)
 async function parseRequestBody(request: NextRequest): Promise<{ githubUrl: string }> {
@@ -114,152 +67,12 @@ async function parseRequestBody(request: NextRequest): Promise<{ githubUrl: stri
   }
 }
 
-export async function POST(request: NextRequest) {
-  try {
-    const sessionId = getSessionId(request);
-    const currentCount = getSessionCount(sessionId);
-
-    // Get the generation limit based on user's plan
-    const maxGenerations = await getGenerationLimit(request);
-
-    // Check if limit is reached before processing
-    if (currentCount >= maxGenerations) {
-      const response = NextResponse.json(
-          {
-            error: `Session limit reached. Only ${maxGenerations} README generations are allowed per session.`,
-            generationsUsed: currentCount,
-            maxGenerations: maxGenerations,
-            remaining: maxGenerations - currentCount,
-            isLimitReached: true
-          },
-          { status: 429 }
-      );
-
-      // Set session cookie
-      response.cookies.set('readme-session-id', sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 24 * 60 * 60 // 24 hours
-      });
-
-      return response;
-    }
-
-    // Parse request body with improved error handling
-    let githubUrl: string;
-    try {
-      const parsedBody = await parseRequestBody(request);
-      githubUrl = parsedBody.githubUrl;
-    } catch (parseError) {
-      console.error('Error parsing request body:', parseError);
-      return NextResponse.json(
-          { error: 'Invalid request format. Please send githubUrl as JSON or form data.' },
-          { status: 400 }
-      );
-    }
-
-    if (!githubUrl || !isValidGithubUrl(githubUrl)) {
-      return NextResponse.json(
-          { error: 'Invalid GitHub repository URL' },
-          { status: 400 }
-      );
-    }
-
-    const geminiApiKey = process.env.GEMINI_API_KEY;
-    if (!geminiApiKey) {
-      return NextResponse.json(
-          { error: 'Gemini API key is not configured' },
-          { status: 500 }
-      );
-    }
-
-    try {
-      const markdownContent = await generateReadmeWithGemini(githubUrl, geminiApiKey);
-
-      // Only increment counter after successful generation
-      const newCount = incrementSessionCount(sessionId);
-
-      const response = NextResponse.json({
-        markdown: markdownContent,
-        generationsUsed: newCount,
-        maxGenerations: maxGenerations,
-        remaining: maxGenerations - newCount,
-        isLimitReached: newCount >= maxGenerations
-      });
-
-      // Set session cookie
-      response.cookies.set('readme-session-id', sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 24 * 60 * 60 // 24 hours
-      });
-
-      return response;
-    } catch (geminiError) {
-      console.error('Gemini API error:', geminiError);
-      const response = NextResponse.json(
-          {
-            error: 'Failed to generate README. Please try again later.',
-            generationsUsed: currentCount,
-            maxGenerations: maxGenerations,
-            remaining: maxGenerations - currentCount,
-            isLimitReached: currentCount >= maxGenerations
-          },
-          { status: 500 }
-      );
-
-      // Set session cookie even on error
-      response.cookies.set('readme-session-id', sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 24 * 60 * 60 // 24 hours
-      });
-
-      return response;
-    }
-  } catch (error) {
-    console.error('Error processing request:', error);
-    return NextResponse.json(
-        { error: 'Failed to process the request' },
-        { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: NextRequest) {
-  const sessionId = getSessionId(request);
-  const currentCount = getSessionCount(sessionId);
-
-  // Get the generation limit based on user's plan
-  const maxGenerations = await getGenerationLimit(request);
-
-  const response = NextResponse.json({
-    generationsUsed: currentCount,
-    maxGenerations: maxGenerations,
-    remaining: maxGenerations - currentCount,
-    isLimitReached: currentCount >= maxGenerations
-  });
-
-  // Set session cookie
-  response.cookies.set('readme-session-id', sessionId, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 24 * 60 * 60 // 24 hours
-  });
-
-  return response;
-}
-
 function isValidGithubUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
     return (
-        parsedUrl.hostname === 'github.com' &&
-        parsedUrl.pathname.split('/').filter(Boolean).length >= 2
+      parsedUrl.hostname === 'github.com' &&
+      parsedUrl.pathname.split('/').filter(Boolean).length >= 2
     );
   } catch (error) {
     return false;
@@ -294,4 +107,150 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
 
   const data = await response.json();
   return data.candidates[0].content.parts[0].text;
+}
+
+export async function GET() {
+  try {
+    const { userId } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { data, error } = await supabase
+      .from('users')
+      .select('readme_count')
+      .eq('id', userId)
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    const currentCount = data.readme_count || 0;
+
+    return NextResponse.json({
+      generationsUsed: currentCount,
+      maxGenerations: DEFAULT_GENERATION_LIMIT,
+      remaining: DEFAULT_GENERATION_LIMIT - currentCount,
+      isLimitReached: currentCount >= DEFAULT_GENERATION_LIMIT
+    });
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch user data' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { userId } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Get current user data
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('readme_count')
+      .eq('id', userId)
+      .single();
+
+    if (userError) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    const currentCount = userData.readme_count || 0;
+
+    // Check if limit is reached before processing
+    if (currentCount >= DEFAULT_GENERATION_LIMIT) {
+      return NextResponse.json(
+        {
+          error: `Generation limit reached. Only ${DEFAULT_GENERATION_LIMIT} README generations are allowed.`,
+          generationsUsed: currentCount,
+          maxGenerations: DEFAULT_GENERATION_LIMIT,
+          remaining: DEFAULT_GENERATION_LIMIT - currentCount,
+          isLimitReached: true
+        },
+        { status: 429 }
+      );
+    }
+
+    // Parse request body with improved error handling
+    let githubUrl: string;
+    try {
+      const parsedBody = await parseRequestBody(request);
+      githubUrl = parsedBody.githubUrl;
+    } catch (parseError) {
+      console.error('Error parsing request body:', parseError);
+      return NextResponse.json(
+        { error: 'Invalid request format. Please send githubUrl as JSON or form data.' },
+        { status: 400 }
+      );
+    }
+
+    if (!githubUrl || !isValidGithubUrl(githubUrl)) {
+      return NextResponse.json(
+        { error: 'Invalid GitHub repository URL' },
+        { status: 400 }
+      );
+    }
+
+    const geminiApiKey = process.env.GEMINI_API_KEY;
+    if (!geminiApiKey) {
+      return NextResponse.json(
+        { error: 'Gemini API key is not configured' },
+        { status: 500 }
+      );
+    }
+
+    try {
+      const markdownContent = await generateReadmeWithGemini(githubUrl, geminiApiKey);
+
+      // Update user's readme count after successful generation
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ readme_count: currentCount + 1 })
+        .eq('id', userId);
+
+      if (updateError) {
+        console.error('Error updating user count:', updateError);
+        return NextResponse.json(
+          { error: 'Failed to update generation count' },
+          { status: 500 }
+        );
+      }
+
+      const newCount = currentCount + 1;
+
+      return NextResponse.json({
+        markdown: markdownContent,
+        generationsUsed: newCount,
+        maxGenerations: DEFAULT_GENERATION_LIMIT,
+        remaining: DEFAULT_GENERATION_LIMIT - newCount,
+        isLimitReached: newCount >= DEFAULT_GENERATION_LIMIT
+      });
+    } catch (geminiError) {
+      console.error('Gemini API error:', geminiError);
+      return NextResponse.json(
+        {
+          error: 'Failed to generate README. Please try again later.',
+          generationsUsed: currentCount,
+          maxGenerations: DEFAULT_GENERATION_LIMIT,
+          remaining: DEFAULT_GENERATION_LIMIT - currentCount,
+          isLimitReached: currentCount >= DEFAULT_GENERATION_LIMIT
+        },
+        { status: 500 }
+      );
+    }
+  } catch (error) {
+    console.error('Error processing request:', error);
+    return NextResponse.json(
+      { error: 'Failed to process the request' },
+      { status: 500 }
+    );
+  }
 }

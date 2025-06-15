@@ -12,6 +12,7 @@ import {
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import {Analytics} from "@vercel/analytics/next";
+import UserSyncer from '@/components/UserSyncer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,6 +46,7 @@ export default function RootLayout({
         >
           <SignedIn>
             <Navbar />
+            <UserSyncer />
             <main>
               {children}
             </main>
