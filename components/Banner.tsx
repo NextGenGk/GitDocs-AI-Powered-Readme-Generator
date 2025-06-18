@@ -67,7 +67,7 @@ export default function Banner() {
                                 className="px-6 md:px-8 py-3 md:py-4 rounded-full border border-blue-300 bg-blue-50/80 backdrop-blur-sm text-blue-700 shadow-lg hover:bg-blue-100/80 transition-all duration-300 text-base md:text-lg flex items-center gap-2"
                             >
                                 <LayoutDashboard className="w-5 h-5 text-blue-600" />
-                                <span>Dashboard</span>
+                                <span className="text-base">Dashboard</span>
                             </Button>
                         </Link>
                     </div>
