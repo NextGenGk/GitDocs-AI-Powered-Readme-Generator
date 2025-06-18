@@ -280,12 +280,12 @@ const GitDocsFAQ = () => {
                 <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl p-8 text-center text-white">
                     <h2 className="text-3xl font-bold mb-4">Still need help?</h2>
                     <p className="text-xl mb-6 text-blue-100">
-                        Our support team is here to help you succeed with GitHub to Markdown Converter.
+                        Our support team is here to help you succeed with GitDocs.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button
-                            onClick={() => window.open('https://github.com/NextGenGk/', '_blank')}
-                            className="bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300"
+                            onClick={() => window.open('https://github.com/NextGenGk/', '_blank', 'cursor=pointer')}
+                            className="bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
                         >
                             Contact Support
                         </button>
