@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, LayoutDashboard } from "lucide-react";
 
 export default function Banner() {
     const { user, isSignedIn } = useUser();
@@ -48,15 +48,12 @@ export default function Banner() {
                         variant="outline"
                         className="px-4 sm:px-6 py-1 sm:py-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm text-white shadow-md hover:bg-white/20 transition-all duration-300 text-sm"
                     >
-                        <Sparkles className="w-4 h-4 mr-2 text-yellow-300" />
+                        <Sparkles className="w-4 h-4 text-yellow-300" />
                         <span>Ready. Set. Document!</span>
                     </Button>
                 </div>
 
                 {/* Headline */}
-                {/*<h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-violet-400 to-fuchsia-500">*/}
-                {/*    Your Code Deserves Better README.*/}
-                {/*</h1>*/}
                 <h1 className="text-6xl sm:text-5xl lg:text-6xl font-semibold ">
                     Your Code Deserves Better README.
                 </h1>
@@ -67,14 +64,21 @@ export default function Banner() {
                     Just paste your repo. We'll do the writing magic.
                 </p>
 
-                {/* Buttons */}
+                 {/*Buttons */}
                 <div className="flex justify-center items-center mt-8 sm:mt-12 animate-fade-in-up">
-                    <Link href={isSignedIn ? "/dashboard" : "/sign-in"}>
-                        <Button className="px-24 py-3 sm:px-16 sm:py-4 text-sm sm:text-base font-stretch-semi-condensed bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl rounded-2xl">
-                            {isSignedIn ? "Dashboard" : "Get Started"}
-                            <ArrowRight className="ml-2 w-4 h-4" />
-                        </Button>
-                    </Link>
+                    {isSignedIn && (
+                        <div className="pt-4 sm:pt-6">
+                            <Link href="/dashboard">
+                                <Button
+                                    variant="outline"
+                                    className="px-4 sm:px-6 py-2 sm:py-3 rounded-full border border-blue-400/40 bg-blue-500/15 backdrop-blur-sm text-blue-100 shadow-md hover:bg-blue-500/25 transition-all duration-300 text-sm"
+                                >
+                                    <LayoutDashboard className="w-4 h-4 text-blue-300" />
+                                    <span>Dashboard</span>
+                                </Button>
+                            </Link>
+                        </div>
+                    )}
                 </div>
 
                 {/* Scroll Indicator */}
