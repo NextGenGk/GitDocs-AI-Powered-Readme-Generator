@@ -48,13 +48,13 @@ const NavItems = ({ isMobile = false, onItemClick }: NavItemsProps) => {
                             ? [
                                 "text-lg py-3 px-4 flex items-center",
                                 "hover:bg-gray-50 dark:hover:bg-gray-800 active:bg-gray-100 dark:active:bg-gray-700",
-                                "border-l-4 border-transparent hover:border-primary",
-                                pathname === href && "bg-gray-50 dark:bg-gray-800 border-primary font-semibold text-primary"
+                                "border-l-4 border-transparent hover:border-blue-600",
+                                pathname === href && "bg-gray-50 dark:bg-gray-800 border-blue-600 font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
                             ]
                             : [
                                 "text-sm md:text-base lg:text-lg px-2 py-2",
-                                "text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary",
-                                pathname === href && "font-medium text-primary"
+                                "text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 hover:bg-clip-text hover:text-transparent",
+                                pathname === href && "font-medium bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
                             ]
                     )}
                     onClick={handleItemClick}
@@ -66,7 +66,7 @@ const NavItems = ({ isMobile = false, onItemClick }: NavItemsProps) => {
                     {!isMobile && (
                         <span
                             className={cn(
-                                "absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300",
+                                "absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 transition-all duration-300",
                                 pathname === href
                                     ? "w-full"
                                     : "w-0 group-hover:w-full"
@@ -131,19 +131,19 @@ export const MobileNav = ({ className }: MobileNavProps) => {
                     <span
                         className={cn(
                             "block h-0.5 w-full bg-gray-800 dark:bg-gray-200 transition-all duration-300 origin-center",
-                            isOpen && "rotate-45 translate-y-2 bg-primary"
+                            isOpen && "rotate-45 translate-y-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"
                         )}
                     />
                     <span
                         className={cn(
                             "block h-0.5 w-full bg-gray-800 dark:bg-gray-200 transition-all duration-300",
-                            isOpen && "opacity-0 bg-primary"
+                            isOpen && "opacity-0"
                         )}
                     />
                     <span
                         className={cn(
                             "block h-0.5 w-full bg-gray-800 dark:bg-gray-200 transition-all duration-300 origin-center",
-                            isOpen && "-rotate-45 -translate-y-2 bg-primary"
+                            isOpen && "-rotate-45 -translate-y-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"
                         )}
                     />
                 </div>
@@ -178,7 +178,7 @@ export const MobileNav = ({ className }: MobileNavProps) => {
                 <div className="flex flex-col h-full">
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
-                        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Menu</h2>
+                        <h2 className="text-xl font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Menu</h2>
                         <button
                             onClick={closeMenu}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -198,7 +198,7 @@ export const MobileNav = ({ className }: MobileNavProps) => {
                         {/*<div className="p-6 border-t border-gray-200 dark:border-gray-800 mt-auto">*/}
                         {/*    <Link*/}
                         {/*        href="/pricing"*/}
-                        {/*        className="block w-full py-3 px-4 bg-primary hover:bg-primary/90 text-white font-medium text-center shadow-md hover:shadow-lg transition-all duration-200"*/}
+                        {/*        className="block w-full py-3 px-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-medium text-center shadow-md hover:shadow-lg transition-all duration-200"*/}
                         {/*        onClick={closeMenu}*/}
                         {/*    >*/}
                         {/*        Upgrade to Pro*/}

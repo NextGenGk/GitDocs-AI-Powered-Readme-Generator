@@ -55,7 +55,7 @@ const Navbar = () => {
                     {/* Logo Section */}
                     <div className="flex-shrink-0 relative z-10">
                         <Link href="/" className="flex items-center gap-2.5 group">
-                            <div className="relative overflow-hidden rounded-xl p-1 bg-gradient-to-br from-primary/20 to-purple-500/20 group-hover:from-primary/30 group-hover:to-purple-500/30 transition-all duration-300">
+                            <div className="relative overflow-hidden rounded-xl p-1 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 group-hover:from-blue-600/30 group-hover:via-purple-600/30 group-hover:to-pink-600/30 transition-all duration-300">
                                 <Image
                                     src="/logo.png"
                                     alt="GitDocs Logo"
@@ -65,10 +65,10 @@ const Navbar = () => {
                                 />
                             </div>
                             <div className="flex items-baseline">
-                                <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                                <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-fade-in">
                                     GitDocs
                                 </span>
-                                <span className="text-4xl text-primary font-bold ml-0.5">.</span>
+                                <span className="text-4xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-bold ml-0.5">.</span>
                             </div>
                         </Link>
                     </div>
@@ -86,7 +86,7 @@ const Navbar = () => {
                                 </SignInButton>
 
                                 <Link href="/sign-up">
-                                    <button className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-700 text-white transition-all rounded-lg px-4 py-2 text-sm font-medium shadow-md hover:shadow-lg">
+                                    <button className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white transition-all rounded-lg px-4 py-2 text-sm font-medium shadow-md hover:shadow-lg">
                                         Get Started
                                     </button>
                                 </Link>
@@ -97,7 +97,7 @@ const Navbar = () => {
                                     afterSignOutUrl="/"
                                     appearance={{
                                         elements: {
-                                            avatarBox: "border-2 border-primary/20 hover:border-primary/50 transition-colors"
+                                            avatarBox: "border-2 border-blue-600/20 hover:border-purple-600/50 transition-colors"
                                         }
                                     }}
                                 />
