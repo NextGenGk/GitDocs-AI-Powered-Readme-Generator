@@ -352,14 +352,14 @@ export default function Dashboard() {
                       <span className="text-red-700 text-sm">
                         Generation limit reached! You have used all {usageInfo.maxGenerations} available generations.
                       </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="ml-4 px-3 py-1 border border-red-300 rounded-md text-sm text-red-600 hover:bg-red-100 transition-colors"
-                        onClick={() => window.location.href = '/pricing'}
-                      >
-                        Upgrade to Pro
-                      </Button>
+                      {/*<Button*/}
+                      {/*  variant="outline"*/}
+                      {/*  size="sm"*/}
+                      {/*  className="ml-4 px-3 py-1 border border-red-300 rounded-md text-sm text-red-600 hover:bg-red-100 transition-colors"*/}
+                      {/*  onClick={() => window.location.href = '/pricing'}*/}
+                      {/*>*/}
+                      {/*  Upgrade to Pro*/}
+                      {/*</Button>*/}
                     </div>
                   </div>
                 </div>

@@ -64,22 +64,18 @@ export default function Banner() {
 
                 {/* Subheadline */}
                 <p className="text-base font-stretch-semi-condensed sm:text-xl md:text-2xl text-white/80 font-medium mt-4 sm:mt-6 animate-fade-in">
-                    Just paste your repo. We’ll do the writing magic.
+                    Just paste your repo. We'll do the writing magic.
                 </p>
 
                 {/* Buttons */}
                 <div className="flex justify-center items-center mt-8 sm:mt-12 animate-fade-in-up">
                     <Link href={isSignedIn ? "/dashboard" : "/sign-in"}>
-                        <Button className="px-8 py-3 sm:px-12 sm:py-4 text-sm sm:text-base font-stretch-semi-condensed bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl rounded-2xl">
-                            {isSignedIn ? "Dashboard" : "Start"}
+                        <Button className="px-24 py-3 sm:px-16 sm:py-4 text-sm sm:text-base font-stretch-semi-condensed bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl rounded-2xl">
+                            {isSignedIn ? "Dashboard" : "Get Started"}
                             <ArrowRight className="ml-2 w-4 h-4" />
                         </Button>
                     </Link>
                 </div>
-
-
-
-
 
                 {/* Scroll Indicator */}
                 <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
