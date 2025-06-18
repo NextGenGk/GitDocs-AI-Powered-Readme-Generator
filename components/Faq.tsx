@@ -98,8 +98,8 @@ const GitDocsFAQ = () => {
             id: 11,
             category: 'account',
             question: 'Is the service free to use?',
-            answer: 'Pricing information is available on our subscription page. We offer different tiers to accommodate various usage needs, from individual developers to enterprise teams. Check our pricing section for current plans and features.',
-            tags: ['pricing', 'free', 'subscription']
+            answer: 'Yes, this service is absolutely free.',
+            tags: ['pricing', 'free']
         },
         {
             id: 12,
