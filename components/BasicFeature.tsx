@@ -389,33 +389,27 @@ export default function Dashboard() {
 
         {/* Preview Modal */}
         {showPreviewModal && (
-            <div
-                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-                onClick={closePreviewModal}
-            >
-              <div
-                  className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col"
-                  onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+                <div className="flex items-center justify-between p-4 border-b">
                   <h3 className="text-lg font-semibold text-gray-900">Markdown Preview</h3>
-                  <button
+                  <Button
+                      variant="outline"
+                      size="sm"
                       onClick={closePreviewModal}
-                      className="flex items-center gap-1 px-2 py-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                      className="flex items-center gap-1 px-2 py-1"
                   >
                     <X className="h-4 w-4" />
                     Close
-                  </button>
+                  </Button>
                 </div>
-                <div className="flex-1 overflow-auto p-6 bg-gray-50">
-                  <div className="bg-white rounded-lg p-6 shadow-sm">
-                    <div
-                        className="prose prose-sm max-w-none text-gray-800"
-                        dangerouslySetInnerHTML={{
-                          __html: renderMarkdownPreview(markdown)
-                        }}
-                    />
-                  </div>
+                <div className="flex-1 overflow-auto p-6">
+                  <div
+                      className="prose prose-sm max-w-none text-gray-800"
+                      dangerouslySetInnerHTML={{
+                        __html: renderMarkdownPreview(markdown)
+                      }}
+                  />
                 </div>
               </div>
             </div>
