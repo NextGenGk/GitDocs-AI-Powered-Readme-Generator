@@ -1,24 +1,12 @@
 'use client';
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowRight, LayoutDashboard } from "lucide-react";
+import { Sparkles, LayoutDashboard } from "lucide-react";
 
 export default function Banner() {
-    const { user, isSignedIn } = useUser();
-
-    const router = useRouter();
-
-    // Redirect to dashboard if logged in
-    // useEffect(() => {
-    //     if (isSignedIn) {
-    //         router.push('/dashboard');
-    //     }
-    // }, [isSignedIn, router]);
+    const { isSignedIn } = useUser();
 
     return (
         <div className="relative w-full min-h-screen overflow-hidden overscroll-none">
@@ -59,22 +47,22 @@ export default function Banner() {
                 </div>
 
                 {/* Buttons */}
-                {isSignedIn && (
-                    <div className="mb-12 animate-fade-in-up">
-                        <Link href="/dashboard">
-                            <Button
-                                variant="outline"
-                                className="px-6 md:px-8 py-3 md:py-4 rounded-full border border-blue-300 bg-blue-50/80 backdrop-blur-sm text-blue-700 shadow-lg hover:bg-blue-100/80 transition-all duration-300 text-base md:text-lg flex items-center gap-2"
-                            >
-                                <LayoutDashboard className="w-5 h-5 text-blue-600" />
-                                <span className="text-base">Dashboard</span>
-                            </Button>
-                        </Link>
-                    </div>
-                )}
+                {/*{isSignedIn && (*/}
+                {/*    <div className="mb-12 text-base animate-fade-in-up">*/}
+                {/*        <Link href="/dashboard">*/}
+                {/*            <Button*/}
+                {/*                variant="outline"*/}
+                {/*                className="px-6 md:px-8 py-3 md:py-4 rounded-full border border-blue-300 bg-blue-50/80 backdrop-blur-sm text-blue-700 shadow-lg hover:bg-blue-100/80 transition-all duration-300 text-base md:text-lg flex items-center gap-2"*/}
+                {/*            >*/}
+                {/*                <LayoutDashboard className="w-5 h-5 text-blue-600" />*/}
+                {/*                <span className="text-base">Dashboard</span>*/}
+                {/*            </Button>*/}
+                {/*        </Link>*/}
+                {/*    </div>*/}
+                {/*)}*/}
 
                 {/* Scroll Indicator - Hidden on small screens */}
-                <div className="flex-col items-center animate-bounce hidden sm:flex">
+                <div className="flex-col pt-16 items-center animate-bounce hidden sm:flex">
                     <span className="text-gray-500 text-sm mb-2">Scroll Down</span>
                     <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
