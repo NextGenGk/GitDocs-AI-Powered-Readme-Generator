@@ -53,7 +53,6 @@ export default function RootLayout({
           </SignedIn>
 
           <SignedOut>
-            <RedirectToSignIn />
             <Navbar />
             <main>
               {children}
