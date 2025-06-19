@@ -18,51 +18,53 @@ export default function Banner() {
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-96 md:h-96 bg-pink-100/20 rounded-full blur-3xl"></div>
             </div>
 
-            {/* Content */}
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 md:px-6 lg:px-8 text-center pt-24 md:pt-32 pb-20">
-                {/* Badge */}
-                <div className="mb-6 animate-fade-in-down">
-                    <Button
-                        variant="outline"
-                        className="px-4 md:px-6 py-2 md:py-2 rounded-full border border-blue-200 bg-white/70 backdrop-blur-sm text-blue-700 shadow-lg hover:bg-white/90 transition-all duration-300 text-sm md:text-base flex items-center gap-2"
-                    >
-                        <Sparkles className="w-4 h-4 text-yellow-500" />
-                        <span>Ready. Set. Document!</span>
-                    </Button>
+            {/* Content - Perfectly Centered */}
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 md:px-6 lg:px-8 text-center">
+                <div className="flex flex-col items-center justify-center space-y-6 md:space-y-8">
+                    {/* Badge */}
+                    <div className="animate-fade-in-down">
+                        <Button
+                            variant="outline"
+                            className="px-4 md:px-6 py-2 md:py-2 rounded-full border border-blue-200 bg-white/70 backdrop-blur-sm text-blue-700 shadow-lg hover:bg-white/90 transition-all duration-300 text-sm md:text-base flex items-center gap-2"
+                        >
+                            <Sparkles className="w-4 h-4 text-yellow-500" />
+                            <span>Ready. Set. Document!</span>
+                        </Button>
+                    </div>
+
+                    {/* Headline */}
+                    <div className="animate-fade-in">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-tight md:leading-tight bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            <span className="block">Your Code Deserves</span>
+                            <span className="block">Better README.</span>
+                        </h1>
+                    </div>
+
+                    {/* Subheadline */}
+                    <div className="animate-fade-in">
+                        <p className="text-lg sm:text-xl md:text-2xl text-gray-600 font-medium max-w-2xl mx-auto leading-relaxed">
+                            Just paste your repo. We'll do the writing magic.
+                        </p>
+                    </div>
+
+                    {/* Buttons */}
+                    {/*{isSignedIn && (*/}
+                    {/*    <div className="animate-fade-in-up">*/}
+                    {/*        <Link href="/dashboard">*/}
+                    {/*            <Button*/}
+                    {/*                variant="outline"*/}
+                    {/*                className="px-6 md:px-8 py-3 md:py-4 rounded-full border border-blue-300 bg-blue-50/80 backdrop-blur-sm text-blue-700 shadow-lg hover:bg-blue-100/80 transition-all duration-300 text-base md:text-lg flex items-center gap-2"*/}
+                    {/*            >*/}
+                    {/*                <LayoutDashboard className="w-5 h-5 text-blue-600" />*/}
+                    {/*                <span className="text-base">Dashboard</span>*/}
+                    {/*            </Button>*/}
+                    {/*        </Link>*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
                 </div>
 
-                {/* Headline */}
-                <div className="mb-6">
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-semibold leading-tight md:leading-tight bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-fade-in">
-                        <span className="block">Your Code Deserves</span>
-                        <span className="block">Better README.</span>
-                    </h1>
-                </div>
-
-                {/* Subheadline */}
-                <div className="mb-8">
-                    <p className="text-lg sm:text-xl md:text-2xl text-gray-600 font-medium max-w-2xl mx-auto leading-relaxed animate-fade-in">
-                        Just paste your repo. We'll do the writing magic.
-                    </p>
-                </div>
-
-                {/* Buttons */}
-                {/*{isSignedIn && (*/}
-                {/*    <div className="mb-12 text-base animate-fade-in-up">*/}
-                {/*        <Link href="/dashboard">*/}
-                {/*            <Button*/}
-                {/*                variant="outline"*/}
-                {/*                className="px-6 md:px-8 py-3 md:py-4 rounded-full border border-blue-300 bg-blue-50/80 backdrop-blur-sm text-blue-700 shadow-lg hover:bg-blue-100/80 transition-all duration-300 text-base md:text-lg flex items-center gap-2"*/}
-                {/*            >*/}
-                {/*                <LayoutDashboard className="w-5 h-5 text-blue-600" />*/}
-                {/*                <span className="text-base">Dashboard</span>*/}
-                {/*            </Button>*/}
-                {/*        </Link>*/}
-                {/*    </div>*/}
-                {/*)}*/}
-
-                {/* Scroll Indicator - Hidden on small screens */}
-                <div className="flex-col pt-16 items-center animate-bounce hidden sm:flex">
+                {/* Scroll Indicator - Positioned at bottom */}
+                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce hidden sm:flex">
                     <span className="text-gray-500 text-sm mb-2">Scroll Down</span>
                     <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
