@@ -218,7 +218,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="min-h-screen py-22 bg-white relative overflow-hidden">
+        <div className="min-h-screen py-22">
             {/* Background Elements */}
             <div className="absolute top-40 left-10 w-72 h-72 rounded-full blur-3xl -z-10"></div>
             <div className="absolute bottom-40 right-10 w-80 h-80 rounded-full blur-3xl -z-10"></div>
