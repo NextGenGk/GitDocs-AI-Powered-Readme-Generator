@@ -35,28 +35,28 @@ const MobileNav = () => {
 
     return (
         <div className="mobile-nav-container relative">
-            {/* Hamburger Menu Button */}
+            {/* Hamburger Menu Button with white background */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex flex-col justify-center items-center w-8 h-8 space-y-1.5 focus:outline-none"
+                className="flex flex-col justify-center items-center w-10 h-10 space-y-1.5 focus:outline-none bg-white rounded-lg shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors"
                 aria-label="Toggle menu"
             >
                 <span
                     className={cn(
-                        "block w-6 h-0.5 bg-gray-800 transition-all duration-300",
-                        isOpen ? "rotate-45 translate-y-2" : ""
+                        "block w-5 h-0.5 bg-gray-800 transition-all duration-300",
+                        isOpen ? "rotate-45 translate-y-1.5" : ""
                     )}
                 />
                 <span
                     className={cn(
-                        "block w-6 h-0.5 bg-gray-800 transition-all duration-300",
+                        "block w-5 h-0.5 bg-gray-800 transition-all duration-300",
                         isOpen ? "opacity-0" : ""
                     )}
                 />
                 <span
                     className={cn(
-                        "block w-6 h-0.5 bg-gray-800 transition-all duration-300",
-                        isOpen ? "-rotate-45 -translate-y-2" : ""
+                        "block w-5 h-0.5 bg-gray-800 transition-all duration-300",
+                        isOpen ? "-rotate-45 -translate-y-1.5" : ""
                     )}
                 />
             </button>
@@ -66,16 +66,16 @@ const MobileNav = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
             )}
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu with enhanced white background */}
             <div
                 className={cn(
-                    "fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50",
+                    "fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 border-l border-gray-100",
                     isOpen ? "translate-x-0" : "translate-x-full"
                 )}
             >
-                <div className="flex flex-col h-full">
-                    {/* Header */}
-                    <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                <div className="flex flex-col h-full bg-white">
+                    {/* Header with white background */}
+                    <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-white">
                         <div className="flex items-center gap-2">
                             <div className="relative overflow-hidden rounded-xl p-1 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20">
                                 <Image
@@ -92,7 +92,7 @@ const MobileNav = () => {
 
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors bg-white"
                             aria-label="Close menu"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,15 +101,15 @@ const MobileNav = () => {
                         </button>
                     </div>
 
-                    {/* Navigation Items */}
-                    <div className="flex-1 px-6 py-4">
+                    {/* Navigation Items with white background */}
+                    <div className="flex-1 px-6 py-4 bg-white">
                         <div onClick={() => setIsOpen(false)}>
                             <NavItems isMobile />
                         </div>
                     </div>
 
-                    {/* Auth Section */}
-                    <div className="p-6 border-t border-gray-200">
+                    {/* Auth Section with white background */}
+                    <div className="p-6 border-t border-gray-200 bg-white">
                         <SignedOut>
                             <div className="space-y-3">
                                 <SignInButton>
@@ -189,66 +189,69 @@ const Navbar = () => {
                 isVisible ? "translate-y-0" : "-translate-y-full"
             )}
         >
-            <div className="container mx-auto px-4 relative">
-                <nav className="flex items-center justify-between py-4">
-                    {/* Logo Section */}
-                    <div className="flex-shrink-0 relative z-10">
-                        <Link href="/" className="flex items-center gap-2.5 group">
-                            <div className="relative overflow-hidden rounded-xl p-1 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 group-hover:from-blue-600/30 group-hover:via-purple-600/30 group-hover:to-pink-600/30 transition-all duration-300">
-                                <Image
-                                    src="/logo.png"
-                                    alt="GitDocs Logo"
-                                    width={38}
-                                    height={36}
-                                    className="transform group-hover:scale-110 transition-transform duration-300"
-                                />
-                            </div>
-                            <div className="flex items-baseline">
-                                <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-fade-in">
-                                    GitDocs
-                                </span>
-                                <span className="text-4xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-bold ml-0.5">.</span>
-                            </div>
-                        </Link>
-                    </div>
-
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-8">
-                        <NavItems />
-
-                        <div className="flex items-center gap-4">
-                            <SignedOut>
-                                <SignInButton>
-                                    <button className="bg-white text-gray-900 hover:bg-gray-100 border border-gray-300 transition-colors rounded-lg px-4 py-2 text-sm font-medium shadow-sm hover:shadow">
-                                        Sign In
-                                    </button>
-                                </SignInButton>
-
-                                <Link href="/sign-up">
-                                    <button className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white transition-all rounded-lg px-4 py-2 text-sm font-medium shadow-md hover:shadow-lg">
-                                        Get Started
-                                    </button>
-                                </Link>
-                            </SignedOut>
-
-                            <SignedIn>
-                                <UserButton
-                                    afterSignOutUrl="/"
-                                    appearance={{
-                                        elements: {
-                                            avatarBox: "border-2 border-blue-600/20 hover:border-purple-600/50 transition-colors"
-                                        }
-                                    }}
-                                />
-                            </SignedIn>
+            {/* Add white background to the main navbar container */}
+            <div className="bg-white border-b border-gray-200">
+                <div className="container mx-auto px-4 relative">
+                    <nav className="flex items-center justify-between py-4">
+                        {/* Logo Section */}
+                        <div className="flex-shrink-0 relative z-10">
+                            <Link href="/" className="flex items-center gap-2.5 group">
+                                <div className="relative overflow-hidden rounded-xl p-1 bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 group-hover:from-blue-600/30 group-hover:via-purple-600/30 group-hover:to-pink-600/30 transition-all duration-300">
+                                    <Image
+                                        src="/logo.png"
+                                        alt="GitDocs Logo"
+                                        width={38}
+                                        height={36}
+                                        className="transform group-hover:scale-110 transition-transform duration-300"
+                                    />
+                                </div>
+                                <div className="flex items-baseline">
+                                    <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-fade-in">
+                                        GitDocs
+                                    </span>
+                                    <span className="text-4xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-bold ml-0.5">.</span>
+                                </div>
+                            </Link>
                         </div>
-                    </div>
 
-                    {/* Mobile Navigation */}
-                    <div className="md:hidden">
-                        <MobileNav />
-                    </div>
-                </nav>
+                        {/* Desktop Navigation */}
+                        <div className="hidden md:flex items-center gap-8">
+                            <NavItems />
+
+                            <div className="flex items-center gap-4">
+                                <SignedOut>
+                                    <SignInButton>
+                                        <button className="bg-white text-gray-900 hover:bg-gray-100 border border-gray-300 transition-colors rounded-lg px-4 py-2 text-sm font-medium shadow-sm hover:shadow">
+                                            Sign In
+                                        </button>
+                                    </SignInButton>
+
+                                    <Link href="/sign-up">
+                                        <button className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white transition-all rounded-lg px-4 py-2 text-sm font-medium shadow-md hover:shadow-lg">
+                                            Get Started
+                                        </button>
+                                    </Link>
+                                </SignedOut>
+
+                                <SignedIn>
+                                    <UserButton
+                                        afterSignOutUrl="/"
+                                        appearance={{
+                                            elements: {
+                                                avatarBox: "border-2 border-blue-600/20 hover:border-purple-600/50 transition-colors"
+                                            }
+                                        }}
+                                    />
+                                </SignedIn>
+                            </div>
+                        </div>
+
+                        {/* Mobile Navigation */}
+                        <div className="md:hidden">
+                            <MobileNav />
+                        </div>
+                    </nav>
+                </div>
             </div>
         </header>
     );
