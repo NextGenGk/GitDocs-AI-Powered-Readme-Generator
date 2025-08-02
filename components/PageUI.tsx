@@ -8,7 +8,7 @@ export default function Page() {
     return (
         <main className="min-h-screen">
             <Banner />
-            <FeaturesSection />
+{/*             <FeaturesSection /> */}
             <WhyChooseUs />
             <Faq />
             <Footer />
