@@ -16,27 +16,50 @@ export default function UserSyncer() {
       // Sync user data with Supabase
       const syncUser = async () => {
         try {
-          // Use upsert to create or update user
-          const userData = {
-            id: user.id,
-            email: user.primaryEmailAddress?.emailAddress || null,
-            name: user.fullName || user.username || null,
-            avatar: user.imageUrl || null,
-            readme_count: 0 // This will only be set for new users
-          };
-          
-          const { data, error } = await supabase
+          // First check if user exists to preserve readme_count
+          const { data: existingUser, error: fetchError } = await supabase
             .from('users')
-            .upsert(userData, { 
-              onConflict: 'id',
-              ignoreDuplicates: false 
-            })
-            .select();
+            .select('readme_count')
+            .eq('id', user.id)
+            .single();
 
-          if (error) {
-            console.error('Error syncing user:', error);
+          if (fetchError && fetchError.code === 'PGRST116') {
+            // User doesn't exist, create new user
+            const { data, error } = await supabase
+              .from('users')
+              .insert({
+                id: user.id,
+                email: user.primaryEmailAddress?.emailAddress || null,
+                name: user.fullName || user.username || null,
+                avatar: user.imageUrl || null,
+                readme_count: 0
+              })
+              .select();
+
+            if (error) {
+              console.error('Error creating user:', error);
+            } else {
+              console.log('User created successfully');
+            }
+          } else if (!fetchError) {
+            // User exists, update their info but preserve readme_count
+            const { data, error } = await supabase
+              .from('users')
+              .update({
+                email: user.primaryEmailAddress?.emailAddress || null,
+                name: user.fullName || user.username || null,
+                avatar: user.imageUrl || null,
+              })
+              .eq('id', user.id)
+              .select();
+
+            if (error) {
+              console.error('Error updating user:', error);
+            } else {
+              console.log('User updated successfully');
+            }
           } else {
-            console.log('User synced successfully');
+            console.error('Error fetching user:', fetchError);
           }
         } catch (error) {
           console.error('Error syncing user:', error);

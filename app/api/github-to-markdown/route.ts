@@ -235,31 +235,36 @@ export async function GET() {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        // User not found, create new user with count 0
-        console.log('👤 User not found, creating new user...');
+        // User not found, try to create new user
+        console.log('👤 User not found, attempting to create...');
         const { data: newUser, error: createError } = await supabase
           .from('users')
-          .insert({ 
+          .upsert({ 
             id: userId, 
             readme_count: 0,
             email: null,
             name: null,
             avatar: null
+          }, {
+            onConflict: 'id',
+            ignoreDuplicates: false
           })
-          .select()
+          .select('readme_count')
           .single();
           
         if (createError) {
           console.error('❌ Error creating user:', createError);
-          // Return 0 count if creation fails
+          // Return 0 count if creation fails - don't fail the request
           currentCount = 0;
         } else {
           currentCount = newUser?.readme_count || 0;
-          console.log('✅ New user created successfully');
+          console.log('✅ User created successfully');
         }
       } else {
         console.error('❌ Error fetching user data:', error);
-        return NextResponse.json({ error: 'Failed to fetch user data' }, { status: 500 });
+        // Don't fail the request, return default values
+        console.log('⚠️ Returning default values due to database error');
+        currentCount = 0;
       }
     } else {
       currentCount = data?.readme_count || 0;
@@ -311,43 +316,46 @@ export async function POST(request: NextRequest) {
 
     if (userError) {
       if (userError.code === 'PGRST116') {
-        // User not found, create new user
-        console.log('👤 User not found, creating new user...');
+        // User not found, try to create new user
+        console.log('👤 User not found, attempting to create...');
+        
+        // Use upsert to handle race conditions
         const { data: newUser, error: createError } = await supabase
           .from('users')
-          .insert({ 
+          .upsert({ 
             id: userId, 
             readme_count: 0,
             email: null,
             name: null,
             avatar: null
+          }, {
+            onConflict: 'id',
+            ignoreDuplicates: false
           })
-          .select()
+          .select('readme_count')
           .single();
           
         if (createError) {
-          console.error('❌ Error creating user:', createError);
+          console.error('❌ Error upserting user:', createError);
           
-          // Try to fetch the user again in case it was created by UserSyncer
-          const { data: retryData, error: retryError } = await supabase
-            .from('users')
-            .select('readme_count')
-            .eq('id', userId)
-            .single();
-            
-          if (retryError) {
-            return NextResponse.json({ error: 'Failed to create or fetch user' }, { status: 500 });
-          } else {
-            currentCount = retryData?.readme_count || 0;
-            console.log('✅ Found existing user on retry, count:', currentCount);
-          }
+          // Final attempt: just proceed with count 0 and let UserSyncer handle it
+          console.log('⚠️ Proceeding with default count 0');
+          currentCount = 0;
         } else {
           currentCount = newUser?.readme_count || 0;
-          console.log('✅ New user created successfully, count:', currentCount);
+          console.log('✅ User created/updated successfully, count:', currentCount);
         }
       } else {
         console.error('❌ Supabase user error:', userError);
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+        console.error('Error details:', {
+          code: userError.code,
+          message: userError.message,
+          details: userError.details
+        });
+        
+        // Don't fail the request, proceed with count 0
+        console.log('⚠️ Proceeding with default count 0 due to database error');
+        currentCount = 0;
       }
     } else {
       currentCount = userData?.readme_count || 0;
