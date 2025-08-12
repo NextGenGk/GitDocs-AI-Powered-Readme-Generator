@@ -37,7 +37,49 @@ const Navbar = dynamic(() => import("@/components/neobrutalist-navbar"), {
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <ClerkProvider appearance={{ baseTheme: neobrutalism }}>
+    <ClerkProvider 
+      appearance={{
+        baseTheme: neobrutalism,
+        variables: {
+          colorPrimary: "#05e17a",
+          colorBackground: "#ffffff",
+          colorText: "#000000",
+          colorInputBackground: "#ffffff",
+          colorInputText: "#000000",
+          borderRadius: "0px",
+        },
+        elements: {
+          formButtonPrimary: {
+            backgroundColor: "#05e17a",
+            border: "2px solid #000000",
+            boxShadow: "3px 3px 0px 0px rgba(0,0,0,1)",
+            borderRadius: "0px",
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            "&:hover": {
+              backgroundColor: "#000000",
+              color: "#05e17a",
+              boxShadow: "4px 4px 0px 0px rgba(5,225,122,1)",
+            },
+          },
+          userButtonAvatarBox: {
+            border: "2px solid #000000",
+            boxShadow: "2px 2px 0px 0px rgba(0,0,0,1)",
+          },
+          userButtonPopoverCard: {
+            border: "2px solid #000000",
+            boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)",
+            borderRadius: "0px",
+          },
+          userButtonPopoverActionButton: {
+            "&:hover": {
+              backgroundColor: "#05e17a",
+              color: "#000000",
+            },
+          },
+        },
+      }}
+    >
       <html lang="en" suppressHydrationWarning>
         <head>
           <link rel="icon" href="/favicon.ico" sizes="any" />
