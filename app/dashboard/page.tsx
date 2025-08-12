@@ -1,18 +1,39 @@
-import BasicFeature from "@/components/BasicFeature";
-import { FeaturesSection } from "@/components/FeatureSection";
+'use client';
 
-export default async function Dashboard() {
-    return (
-        <main className="min-h-screen flex flex-col items-center justify-center p-4">
-            {/*<div className="w-full max-w-7xl mx-auto px-2 md:px-8">*/}
-                {/* Features Section - visually rich, device friendly */}
-                {/*<FeaturesSection />*/}
-                {/* Basic Feature Section - device friendly */}
+import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 
-            {/*</div>*/}
-
-            <BasicFeature />
-        </main>
-    );
+// Simple loading component that matches server and client render
+function LoadingSpinner() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="text-center space-y-4">
+        <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <p className="text-xl font-black tracking-tight">Loading your dashboard</p>
+      </div>
+    </div>
+  );
 }
 
+// Dynamically import the dashboard component with SSR disabled
+const NeobrutalistDashboard = dynamic(
+  () => import('@/components/neobrutalist-dashboard'),
+  { 
+    ssr: false,
+    loading: () => <LoadingSpinner />
+  }
+);
+
+export default function DashboardPage() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  return (
+    <div className="w-full">
+      {isClient ? <NeobrutalistDashboard /> : <LoadingSpinner />}
+    </div>
+  );
+}

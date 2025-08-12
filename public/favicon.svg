@@ -1,0 +1,18 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with border -->
+  <rect width="32" height="32" fill="#05e17a" rx="6"/>
+  <rect x="1" y="1" width="30" height="30" fill="none" stroke="black" stroke-width="2" rx="5"/>
+  
+  <!-- Document icon -->
+  <rect x="8" y="6" width="12" height="16" fill="white" stroke="black" stroke-width="1.5" rx="1"/>
+  
+  <!-- Text lines representing README content -->
+  <line x1="10" y1="9" x2="18" y2="9" stroke="black" stroke-width="1"/>
+  <line x1="10" y1="11.5" x2="16" y2="11.5" stroke="black" stroke-width="1"/>
+  <line x1="10" y1="14" x2="18" y2="14" stroke="black" stroke-width="1"/>
+  <line x1="10" y1="16.5" x2="15" y2="16.5" stroke="black" stroke-width="1"/>
+  
+  <!-- Git branch icon in corner -->
+  <circle cx="24" cy="8" r="3" fill="black"/>
+  <circle cx="24" cy="8" r="1.5" fill="#05e17a"/>
+</svg>

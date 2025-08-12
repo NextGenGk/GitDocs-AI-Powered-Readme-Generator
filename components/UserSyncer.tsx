@@ -1,29 +1,41 @@
 'use client';
+
+import { useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function UserSyncer() {
-    const { user, isLoaded } = useUser();
-    const [synced, setSynced] = useState(false);
+  const { isLoaded, isSignedIn, user } = useUser();
 
-    useEffect(() => {
-        if (!isLoaded || !user || synced) return;
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      // Sync user data with Supabase
+      const syncUser = async () => {
+        try {
+          await supabase
+            .from('users')
+            .upsert(
+              {
+                id: user.id,
+                email: user.primaryEmailAddress?.emailAddress,
+                name: user.fullName || user.username,
+                avatar: user.imageUrl,
+              },
+              { onConflict: 'id' }
+            )
+            .select();
+        } catch (error) {
+          console.error('Error syncing user:', error);
+        }
+      };
 
-        (async () => {
-            const email = user.emailAddresses[0]?.emailAddress || '';
-            const { error } = await supabase
-                .from('users')
-                .upsert({
-                    id: user.id,
-                    email,
-                    name: user.fullName || '',
-                    avatar: user.imageUrl || '',
-                });
-            if (!error) setSynced(true);
-            else console.error('Supabase sync error:', error);
-        })();
-    }, [isLoaded, user, synced]);
+      syncUser();
+    }
+  }, [isLoaded, isSignedIn, user]);
 
-    return null;
+  return null; // This component doesn't render anything
 }

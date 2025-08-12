@@ -3,6 +3,32 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Markdown Badge Styles */
+.prose img {
+  display: inline-block;
+  margin: 0 2px 4px;
+  vertical-align: middle;
+}
+
+.prose p {
+  margin: 1em 0;
+  line-height: 1.6;
+}
+
+/* Ensure badges are properly aligned */
+.prose a img {
+  border: none;
+  box-shadow: none;
+  max-height: 20px !important;
+  width: auto !important;
+  margin: 0 2px !important;
+}
+
+/* For larger badges */
+.prose a[href*="for-the-badge"] img {
+  max-height: 28px !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
