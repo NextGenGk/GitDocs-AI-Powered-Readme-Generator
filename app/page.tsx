@@ -1,4 +1,5 @@
 import NeobrutalistPageUI from "@/components/neobrutalist-page-ui";
+import MaintenanceBanner from "@/components/MaintenanceBanner";
 
 export default function Page() {
     const jsonLd = {
@@ -34,6 +35,7 @@ export default function Page() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
             <main className="min-h-screen">
+                <MaintenanceBanner />
                 <NeobrutalistPageUI />
             </main>
         </>
