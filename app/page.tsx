@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import NeobrutalistPageUI from "@/components/neobrutalist-page-ui";
-import MaintenanceBanner from "@/components/MaintenanceBanner";
 
 export const metadata: Metadata = {
   title: "GitDocs - Free AI-Powered README Generator for GitHub Repositories",
@@ -108,7 +107,6 @@ export default function Page() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
             <main className="min-h-screen" role="main">
-                <MaintenanceBanner />
                 <NeobrutalistPageUI />
             </main>
         </>

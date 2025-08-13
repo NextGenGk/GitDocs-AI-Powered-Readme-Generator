@@ -11,7 +11,7 @@ interface NeobrutalistBannerProps {
 export default function NeobrutalistBanner({ noPadding = false }: NeobrutalistBannerProps) {
 
     return (
-        <section className="relative h-auto min-h-[500px] md:min-h-[600px] py-2 bg-[#2ecc71] flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-screen py-2 bg-[#2ecc71] flex items-center justify-center overflow-hidden">
             {/* Grid Background */}
             <div className="absolute inset-0 opacity-15">
                 <div className="h-full w-full" style={{
@@ -53,12 +53,12 @@ export default function NeobrutalistBanner({ noPadding = false }: NeobrutalistBa
             {/* Content */}
             <header className={`relative z-10 text-center ${noPadding ? '' : 'px-4'}`}>
                 <h1 className="text-6xl md:text-8xl font-black text-black mb-4 transform -rotate-1">
-                    <span className={`inline-block ${noPadding ? '' : 'px-4'} py-2 bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
+                    <span className="inline-block px-6 py-2 bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                         GITDOCS
                     </span>
                 </h1>
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-8 drop-shadow-[3px_3px_0px_rgba(0,0,0,1)]">
-                    AI-Powered README Generator for GitHub
+                    Create Professional READMEs in Seconds with AI
                 </h2>
                 <p className="text-lg md:text-xl text-white/90 mb-12 max-w-2xl mx-auto">
                     Transform your GitHub repositories into professional README files with intelligent AI. Generate comprehensive documentation, installation guides, and usage examples in seconds.

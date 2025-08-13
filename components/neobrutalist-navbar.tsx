@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useUser, UserButton } from "@clerk/nextjs";
 import { NeobrutalistButton } from "@/components/ui/neobrutalist-button";
 import { Menu, X } from "lucide-react";
+import { useBanner } from "@/contexts/BannerContext";
 
 const NavLink = ({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) => (
   <Link 
@@ -18,6 +19,7 @@ const NavLink = ({ href, children, onClick }: { href: string; children: React.Re
 
 export default function NeobrutalistNavbar() {
     const { isLoaded, isSignedIn } = useUser();
+    const { isBannerVisible } = useBanner();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isClient, setIsClient] = useState(false);
 
@@ -28,7 +30,7 @@ export default function NeobrutalistNavbar() {
     // Show loading state until client is ready and Clerk is loaded
     if (!isClient || !isLoaded) {
         return (
-            <nav className="bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed top-0 left-0 right-0 z-50">
+            <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-16' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center h-16">
                         <div className="flex-shrink-0">
@@ -71,13 +73,13 @@ export default function NeobrutalistNavbar() {
     }
 
     return (
-        <nav className="bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed top-0 left-0 right-0 z-50">
+        <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-16' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center h-16">
                     {/* Logo - Left */}
                     <div className="flex-shrink-0">
                         <Link href="/" className="text-2xl font-black transform -rotate-1 hover:rotate-0 transition-transform group">
-                            <span className="inline-block px-2.5 py-1 pt-3 bg-white text-black border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:text-[#05e17a] hover:shadow-[4px_4px_0px_0px_rgba(5,225,122,1)] transition-all group-hover:scale-105">
+                            <span className="inline-block px-2.5 py-1 pt-1 bg-white text-black border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:text-[#05e17a] hover:shadow-[4px_4px_0px_0px_rgba(5,225,122,1)] transition-all group-hover:scale-105">
                                 GITDOCS
                             </span>
                         </Link>
