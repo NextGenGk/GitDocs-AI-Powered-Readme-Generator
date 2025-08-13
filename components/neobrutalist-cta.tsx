@@ -7,8 +7,9 @@ interface NeobrutalistCtaProps {
 
 export default function NeobrutalistCta({ noPadding = false }: NeobrutalistCtaProps) {
   return (
-    <section className={`py-16 ${noPadding ? '' : 'px-4'} sm:px-6 lg:px-8 bg-[#f0fdf4]`}>
-      <div className="max-w-4xl mx-auto">
+    <section className="bg-[#f0fdf4] w-full">
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
         <div className="
           border-2 border-black rounded-xl p-8 
           bg-white transition-all duration-200
@@ -25,7 +26,7 @@ export default function NeobrutalistCta({ noPadding = false }: NeobrutalistCtaPr
                 Still have questions?
               </h2>
               <p className="text-gray-600 mb-6">
-                We're here to help! Reach out to our support team for any inquiries or assistance.
+                We&apos;re here to help! Reach out to our support team for any inquiries or assistance.
               </p>
               <div className="flex justify-start">
                 <a 
@@ -51,6 +52,7 @@ export default function NeobrutalistCta({ noPadding = false }: NeobrutalistCtaPr
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </section>

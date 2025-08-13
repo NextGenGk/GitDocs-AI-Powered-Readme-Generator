@@ -74,12 +74,13 @@ export default function NeobrutalistNavbar() {
 
     return (
         <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-16' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="w-full">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center h-16">
                     {/* Logo - Left */}
                     <div className="flex-shrink-0">
-                        <Link href="/" className="text-2xl font-black transform -rotate-1 hover:rotate-0 transition-transform group">
-                            <span className="inline-block px-2.5 py-1 pt-1 bg-white text-black border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:text-[#05e17a] hover:shadow-[4px_4px_0px_0px_rgba(5,225,122,1)] transition-all group-hover:scale-105">
+                        <Link href="/" className="text-lg xs:text-xl sm:text-2xl font-black transform -rotate-1 hover:rotate-0 transition-transform group">
+                            <span className="inline-block px-2 xs:px-2.5 py-1 pt-1 bg-white text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:text-[#05e17a] hover:shadow-[3px_3px_0px_0px_rgba(5,225,122,1)] sm:hover:shadow-[4px_4px_0px_0px_rgba(5,225,122,1)] transition-all group-hover:scale-105">
                                 GITDOCS
                             </span>
                         </Link>
@@ -135,15 +136,15 @@ export default function NeobrutalistNavbar() {
 
                 {/* Mobile Navigation */}
                 {isMenuOpen && (
-                    <div className="md:hidden border-t-4 border-black">
-                        <div className="p-4 space-y-2 bg-white">
+                    <div className="md:hidden border-t-2 sm:border-t-4 border-black">
+                        <div className="p-3 xs:p-4 space-y-3 bg-white">
                             <NavLink href="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
                             <NavLink href="/feedback" onClick={() => setIsMenuOpen(false)}>Feedback</NavLink>
                             <NavLink href="/issues" onClick={() => setIsMenuOpen(false)}>Issues</NavLink>
                             {isSignedIn ? (
-                                <div className="space-y-2 pt-2">
-                                    <Link href="/dashboard">
-                                        <NeobrutalistButton size="sm" variant="primary" className="w-full">
+                                <div className="space-y-3 pt-2">
+                                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                                        <NeobrutalistButton size="sm" variant="primary" className="w-full h-12 text-sm font-bold">
                                             Dashboard
                                         </NeobrutalistButton>
                                     </Link>
@@ -152,14 +153,14 @@ export default function NeobrutalistNavbar() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="space-y-2 pt-2">
+                                <div className="space-y-3 pt-2">
                                     <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
-                                        <NeobrutalistButton size="sm" variant="outline" className="w-full">
+                                        <NeobrutalistButton size="sm" variant="outline" className="w-full h-12 text-sm font-bold">
                                             Sign In
                                         </NeobrutalistButton>
                                     </Link>
                                     <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
-                                        <NeobrutalistButton size="sm" variant="default" className="w-full">
+                                        <NeobrutalistButton size="sm" variant="default" className="w-full h-12 text-sm font-bold">
                                             Sign Up
                                         </NeobrutalistButton>
                                     </Link>
@@ -168,6 +169,7 @@ export default function NeobrutalistNavbar() {
                         </div>
                     </div>
                 )}
+                </div>
             </div>
         </nav>
     );

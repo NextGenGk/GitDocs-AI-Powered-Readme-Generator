@@ -29,6 +29,103 @@
   max-height: 28px !important;
 }
 
+/* Extra small screens */
+@media (max-width: 475px) {
+  /* Smaller text for very small screens */
+  .text-3xl { font-size: 1.5rem; }
+  .text-2xl { font-size: 1.25rem; }
+  .text-xl { font-size: 1.125rem; }
+  
+  /* Reduce padding on small screens */
+  .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
+  .py-4 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+  
+  /* Better button sizing */
+  button, .btn {
+    min-height: 48px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Improve touch targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+  
+  /* Better text readability on mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    font-size: 16px;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  /* Better form inputs on mobile */
+  input, textarea, select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  
+  /* Improve card spacing */
+  .space-y-6 > * + * {
+    margin-top: 1rem;
+  }
+  
+  /* Better shadows on mobile */
+  .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
+    box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover\:shadow-\[4px_4px_0px_0px_rgba\(5\,225\,122\,1\)\]:hover {
+    box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+  }
+  
+  /* Add active states for better feedback */
+  button:active, .active\:scale-95:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Better touch feedback */
+  button:active, a:active {
+    opacity: 0.8;
+  }
+}
+
+/* Custom breakpoint for extra small screens */
+@media (max-width: 375px) {
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  /* Even smaller text for tiny screens */
+  h1 { font-size: 1.25rem !important; }
+  h2 { font-size: 1.125rem !important; }
+  
+  /* Compact spacing */
+  .space-y-4 > * + * {
+    margin-top: 0.75rem;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

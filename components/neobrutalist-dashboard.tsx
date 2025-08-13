@@ -334,12 +334,13 @@ export default function NeobrutalistDashboard() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#f0fdf4] py-12">
-      <div className="max-w-6xl mx-auto px-4 space-y-12">
+    <div className="w-full min-h-screen bg-[#f0fdf4]">
+      <div className="w-full py-4 sm:py-6 md:py-8 lg:py-12">
+        <div className="max-w-6xl mx-auto px-2 xs:px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-12">
         {/* Header Section */}
-        <div className="text-center">
-          <h1 className="text-4xl font-black mb-2">GitHub README Generator</h1>
-          <p className="text-lg text-gray-600">Create beautiful README files for your GitHub repositories in seconds</p>
+        <div className="text-center px-2">
+          <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black mb-2 leading-tight">GitHub README Generator</h1>
+          <p className="text-sm xs:text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">Create beautiful README files for your GitHub repositories in seconds</p>
         </div>
 
         {/* Error Message */}
@@ -357,28 +358,28 @@ export default function NeobrutalistDashboard() {
         )}
 
         {/* Generation Form */}
-        <NeobrutalistCard className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] w-full">
-          <NeobrutalistCardHeader className="border-b-2 border-black p-4">
-            <NeobrutalistCardTitle className="text-2xl font-black">
+        <NeobrutalistCard className="border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] w-full">
+          <NeobrutalistCardHeader className="border-b-2 border-black p-3 sm:p-4">
+            <NeobrutalistCardTitle className="text-lg xs:text-xl sm:text-2xl font-black">
               Generate New README
             </NeobrutalistCardTitle>
           </NeobrutalistCardHeader>
-          <NeobrutalistCardContent className="p-6 space-y-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <NeobrutalistCardContent className="p-3 xs:p-4 sm:p-6 space-y-3 xs:space-y-4 sm:space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 xs:space-y-4 sm:space-y-6">
               <div>
-                <div className="flex items-center space-x-2 mb-3">
-                  <Github className="w-5 h-5 flex-shrink-0" />
-                  <label htmlFor="githubUrl" className="block text-sm font-bold text-black">
+                <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+                  <Github className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                  <label htmlFor="githubUrl" className="block text-xs xs:text-sm font-bold text-black">
                     GitHub Repository URL
                   </label>
                 </div>
-                <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
+                <div className="flex flex-col space-y-2 xs:space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
                   <div className="flex-grow">
                     <input
                       id="githubUrl"
                       type="text"
                       placeholder="https://github.com/username/repo"
-                      className="w-full px-4 py-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:ring-2 focus:ring-[#05e17a]"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-3.5 text-sm sm:text-base border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:ring-2 focus:ring-[#05e17a] rounded-none"
                       {...register('githubUrl')}
                     />
                     {errors.githubUrl && (
@@ -387,11 +388,11 @@ export default function NeobrutalistDashboard() {
                       </p>
                     )}
                   </div>
-                  <div className="flex">
+                  <div className="flex w-full sm:w-auto">
                     <NeobrutalistButton 
                       type="submit" 
                       disabled={isGenerating || usageInfo.isLimitReached}
-                      className="whitespace-nowrap h-12 px-6 min-w-[140px]"
+                      className="w-full sm:w-auto whitespace-nowrap h-11 xs:h-12 sm:h-12 px-3 xs:px-4 sm:px-6 min-w-[100px] xs:min-w-[120px] sm:min-w-[140px] text-xs xs:text-sm sm:text-base font-bold"
                     >
                       {isGenerating ? (
                         <div className="flex items-center justify-center space-x-2">
@@ -408,21 +409,21 @@ export default function NeobrutalistDashboard() {
             </form>
 
             {/* Usage Info */}
-            <div className="bg-gray-100 p-4 border-2 border-black">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-bold text-sm">Account Usage</span>
-                <span className="font-mono text-sm">
+            <div className="bg-gray-100 p-3 sm:p-4 border-2 border-black">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 space-y-1 sm:space-y-0">
+                <span className="font-bold text-xs sm:text-sm">Account Usage</span>
+                <span className="font-mono text-xs sm:text-sm">
                   {usageInfo.generationsUsed} / {usageInfo.maxGenerations} generations
                 </span>
               </div>
-              <div className="w-full bg-gray-300 h-3 border border-black">
+              <div className="w-full bg-gray-300 h-2 sm:h-3 border border-black">
                 <div 
                   className="h-full bg-[#05e17a] transition-all duration-500 ease-in-out"
                   style={{ width: `${(usageInfo.generationsUsed / usageInfo.maxGenerations) * 100}%` }}
                 />
               </div>
               {usageInfo.remaining === 0 && (
-                <p className="mt-2 text-xs text-red-600 font-medium text-center">
+                <p className="mt-2 text-xs text-red-600 font-medium text-center leading-relaxed">
                   Account limit reached. You have used all 3 README generations for this account.
                 </p>
               )}
@@ -567,7 +568,7 @@ export default function NeobrutalistDashboard() {
 
 
         {/* Three Boxes Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <NeobrutalistCard className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] h-full flex flex-col">
             <NeobrutalistCardHeader className="border-b-2 border-black p-4">
               <NeobrutalistCardTitle className="text-lg font-black">
@@ -620,6 +621,7 @@ export default function NeobrutalistDashboard() {
           <Link href="/" className="text-[#05e17a] hover:underline font-medium">
             ← Back to Home
           </Link>
+        </div>
       </div>
     </div>
   );

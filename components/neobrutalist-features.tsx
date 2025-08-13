@@ -46,8 +46,9 @@ export default function NeobrutalistFeatures({ noPadding = false }: Neobrutalist
   ];
 
   return (
-    <section id="features" className={`py-16 ${noPadding ? '' : 'px-4'} sm:px-6 lg:px-8 bg-[#f0fdf4]`} aria-labelledby="features-heading">
-      <div className="max-w-7xl mx-auto">
+    <section id="features" className="bg-[#f0fdf4] w-full" aria-labelledby="features-heading">
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
         <NeobrutalistSectionHeading 
           id="features-heading"
           title="FEATURES"
@@ -85,6 +86,7 @@ export default function NeobrutalistFeatures({ noPadding = false }: Neobrutalist
               <p className="text-gray-700 group-hover:text-gray-700">{feature.description}</p>
             </article>
           ))}
+        </div>
         </div>
       </div>
     </section>

@@ -77,8 +77,9 @@ export default function NeobrutalistFaq({ noPadding = false }: NeobrutalistFaqPr
   };
 
   return (
-    <section className={`py-16 ${noPadding ? '' : 'px-4'} sm:px-6 lg:px-8 bg-[#f0fdf4]`}>
-      <div className="max-w-4xl mx-auto">
+    <section className="bg-[#f0fdf4] w-full">
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
         <NeobrutalistSectionHeading 
           title="FAQ"
           subtitle={"Get instant answers to common questions\nand learn how to maximize your documentation's impact"}
@@ -138,6 +139,7 @@ export default function NeobrutalistFaq({ noPadding = false }: NeobrutalistFaqPr
               )}
             </div>
           ))}
+        </div>
         </div>
       </div>
     </section>
