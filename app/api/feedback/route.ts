@@ -33,21 +33,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Log the feedback (in a real app, you might want to send an email here)
-    console.log('New Feedback Received:', {
-      rating: body.rating,
-      message: body.message,
-      email: body.email,
-      name: body.name,
-      timestamp: new Date().toISOString()
-    });
+    // In production, you might want to send this to an email service or database
 
     return NextResponse.json(
       { success: true, message: 'Thank you for your feedback!' },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Error processing feedback:', error);
     return NextResponse.json(
       { error: 'Failed to process feedback' },
       { status: 500 }

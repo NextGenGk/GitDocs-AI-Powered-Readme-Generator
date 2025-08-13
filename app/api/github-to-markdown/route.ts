@@ -13,8 +13,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Enable debug logging in development
-const debug = process.env.NODE_ENV !== 'production';
+
 
 const README_GENERATOR_PROMPT = `You are an expert technical writer and open-source maintainer. Generate a complete, professional README.md file for the given GitHub repository.
 
@@ -85,11 +84,8 @@ function isValidGithubUrl(url: string): boolean {
 }
 
 async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Promise<string> {
-  console.log('🚀 Starting README generation for:', githubUrl);
-  
   try {
     // Extract repository information from the GitHub URL
-    console.log('🔗 Parsing GitHub URL...');
     const url = new URL(githubUrl);
     const pathParts = url.pathname.split('/').filter(Boolean);
     
@@ -98,12 +94,9 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
     }
     
     const [owner, repo] = pathParts;
-    console.log(`📂 Repository: ${owner}/${repo}`);
     
     // Fetch repository details from GitHub API
-    console.log('🌐 Fetching repository details from GitHub...');
     const repoUrl = `https://api.github.com/repos/${owner}/${repo}`;
-    console.log('GitHub API URL:', repoUrl);
     
     const repoResponse = await fetch(repoUrl, {
       headers: {
@@ -113,33 +106,12 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
     });
 
     if (!repoResponse.ok) {
-      const errorText = await repoResponse.text();
-      console.error('❌ GitHub API error:', {
-        status: repoResponse.status,
-        statusText: repoResponse.statusText,
-        url: repoUrl,
-        response: errorText
-      });
       throw new Error(`GitHub API error: ${repoResponse.status} ${repoResponse.statusText}`);
     }
 
     const repoData = await repoResponse.json();
 
-    console.log('✅ Successfully fetched repository details');
-    
-    // Log basic repo info
-    console.log('📊 Repository Info:', {
-      name: repoData.full_name,
-      description: repoData.description,
-      language: repoData.language,
-      stars: repoData.stargazers_count,
-      forks: repoData.forks_count,
-      openIssues: repoData.open_issues_count,
-      lastUpdated: repoData.updated_at
-    });
-
     // Prepare the context for the Gemini API
-    console.log('📝 Preparing context for Gemini API...');
     const context = `
 # GitHub Repository Information
 - Repository: ${repoData.full_name}
@@ -153,7 +125,6 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
 `;
 
     // Call Gemini API with proper formatting
-    console.log('🤖 Sending request to Gemini API...');
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
@@ -181,37 +152,19 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
       }
     );
 
-    console.log('📥 Received response from Gemini API');
-    
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ Gemini API error:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorText
-      });
       throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    console.log('🔍 Gemini API Response:', {
-      hasCandidates: !!data.candidates,
-      candidateCount: data.candidates?.length || 0,
-      firstCandidate: data.candidates?.[0] ? '***PRESENT***' : 'MISSING',
-      contentParts: data.candidates?.[0]?.content?.parts?.length || 0
-    });
     
     if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
       const generatedText = data.candidates[0].content.parts[0].text;
-      console.log('✅ Successfully generated README');
-      console.log('📄 Generated content preview:', generatedText.substring(0, 200) + '...');
       return generatedText;
     } else {
-      console.error('❌ Unexpected response format from Gemini:', JSON.stringify(data, null, 2));
       throw new Error('Unexpected response format from Gemini API: Missing expected content in response');
     }
   } catch (error) {
-    console.error('Error in generateReadmeWithGemini:', error);
     throw error;
   }
 }
@@ -236,7 +189,6 @@ export async function GET() {
     if (error) {
       if (error.code === 'PGRST116') {
         // User not found, try to create new user
-        console.log('👤 User not found, attempting to create...');
         const { data: newUser, error: createError } = await supabase
           .from('users')
           .upsert({ 
@@ -253,17 +205,11 @@ export async function GET() {
           .single();
           
         if (createError) {
-          console.error('❌ Error creating user:', createError);
-          // Return 0 count if creation fails - don't fail the request
           currentCount = 0;
         } else {
           currentCount = newUser?.readme_count || 0;
-          console.log('✅ User created successfully');
         }
       } else {
-        console.error('❌ Error fetching user data:', error);
-        // Don't fail the request, return default values
-        console.log('⚠️ Returning default values due to database error');
         currentCount = 0;
       }
     } else {
@@ -277,7 +223,6 @@ export async function GET() {
       isLimitReached: currentCount >= DEFAULT_GENERATION_LIMIT
     });
   } catch (error) {
-    console.error('Error fetching user data:', error);
     return NextResponse.json(
         { error: 'Failed to fetch user data' },
         { status: 500 }
@@ -286,17 +231,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  console.log('🔍 POST /api/github-to-markdown - Request received');
-  
   try {
-    // Debug: Log environment variables (mask sensitive data)
-    console.log('🔧 Environment Variables:', {
-      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-      hasSupabaseKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      hasGeminiKey: !!process.env.GEMINI_API_KEY,
-      hasGithubToken: !!process.env.GITHUB_TOKEN,
-      nodeEnv: process.env.NODE_ENV
-    });
 
     // Get authenticated user
     const { userId } = await auth();
@@ -305,7 +240,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized - Please sign in' }, { status: 401 });
     }
 
-    console.log('📊 Fetching user data from Supabase...');
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select('readme_count')
@@ -317,9 +251,6 @@ export async function POST(request: NextRequest) {
     if (userError) {
       if (userError.code === 'PGRST116') {
         // User not found, try to create new user
-        console.log('👤 User not found, attempting to create...');
-        
-        // Use upsert to handle race conditions
         const { data: newUser, error: createError } = await supabase
           .from('users')
           .upsert({ 
@@ -336,42 +267,22 @@ export async function POST(request: NextRequest) {
           .single();
           
         if (createError) {
-          console.error('❌ Error upserting user:', createError);
-          
-          // Final attempt: just proceed with count 0 and let UserSyncer handle it
-          console.log('⚠️ Proceeding with default count 0');
           currentCount = 0;
         } else {
           currentCount = newUser?.readme_count || 0;
-          console.log('✅ User created/updated successfully, count:', currentCount);
         }
       } else {
-        console.error('❌ Supabase user error:', userError);
-        console.error('Error details:', {
-          code: userError.code,
-          message: userError.message,
-          details: userError.details
-        });
-        
-        // Don't fail the request, proceed with count 0
-        console.log('⚠️ Proceeding with default count 0 due to database error');
         currentCount = 0;
       }
     } else {
       currentCount = userData?.readme_count || 0;
-      console.log('✅ Found existing user, count:', currentCount);
     }
-
-    console.log(`📊 User has used ${currentCount} of ${DEFAULT_GENERATION_LIMIT} generations`);
 
     // Check if limit is reached
     if (currentCount >= DEFAULT_GENERATION_LIMIT) {
-      const errorMsg = `Generation limit reached. Only ${DEFAULT_GENERATION_LIMIT} README generations are allowed.`;
-      console.error(`❌ ${errorMsg}`);
-      
       return NextResponse.json(
         {
-          error: errorMsg,
+          error: `Generation limit reached. Only ${DEFAULT_GENERATION_LIMIT} README generations are allowed.`,
           code: 'GENERATION_LIMIT_REACHED',
           generationsUsed: currentCount,
           maxGenerations: DEFAULT_GENERATION_LIMIT,
@@ -382,8 +293,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse request body with improved error handling
-    console.log('📦 Parsing request body...');
+    // Parse request body
     let githubUrl: string;
     try {
       const parsedBody = await parseRequestBody(request);
@@ -392,14 +302,11 @@ export async function POST(request: NextRequest) {
       if (!githubUrl) {
         throw new Error('Missing githubUrl in request body');
       }
-      
-      console.log('✅ Parsed GitHub URL:', githubUrl);
     } catch (parseError) {
       const errorMsg = parseError instanceof Error 
         ? parseError.message 
         : 'Unknown error parsing request body';
       
-      console.error('❌ Error parsing request body:', parseError);
       return NextResponse.json(
         { 
           error: 'Invalid request format',
@@ -410,14 +317,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('🔗 Validating GitHub URL...');
     if (!isValidGithubUrl(githubUrl)) {
-      const errorMsg = 'Invalid GitHub repository URL. Expected format: https://github.com/username/repository';
-      console.error(`❌ ${errorMsg}: ${githubUrl}`);
-      
       return NextResponse.json(
         { 
-          error: errorMsg,
+          error: 'Invalid GitHub repository URL. Expected format: https://github.com/username/repository',
           receivedUrl: githubUrl,
           code: 'INVALID_GITHUB_URL'
         },
@@ -425,46 +328,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('🔑 Checking for Gemini API key...');
     const geminiApiKey = process.env.GEMINI_API_KEY;
     if (!geminiApiKey) {
-      const errorMsg = 'Gemini API key is not configured';
-      console.error(`❌ ${errorMsg}`);
-      
       return NextResponse.json(
         { 
           error: 'Service temporarily unavailable',
-          code: 'SERVICE_UNAVAILABLE',
-          details: errorMsg
+          code: 'SERVICE_UNAVAILABLE'
         },
         { status: 503 }
       );
     }
 
     try {
-      console.log('🚀 Starting README generation...');
       const markdownContent = await generateReadmeWithGemini(githubUrl, geminiApiKey);
       
-      // Update user count in database - increment by 1
-      console.log('🔄 Updating user generation count...');
+      // Update user count in database
       const newCount = currentCount + 1;
       
+      // Try direct update first
       const { error: updateError } = await supabase
         .from('users')
         .update({ readme_count: newCount })
         .eq('id', userId);
 
+      // If direct update fails, try upsert
       if (updateError) {
-        console.error('⚠️ Failed to update user count:', updateError);
-        // Continue anyway - don't fail the request
-      } else {
-        console.log('✅ Updated user generation count in database');
+        await supabase
+          .from('users')
+          .upsert({ 
+            id: userId, 
+            readme_count: newCount,
+            email: null,
+            name: null,
+            avatar: null
+          }, {
+            onConflict: 'id',
+            ignoreDuplicates: false
+          });
       }
 
       const remaining = Math.max(0, DEFAULT_GENERATION_LIMIT - newCount);
       const isLimitReached = newCount >= DEFAULT_GENERATION_LIMIT;
-      
-      console.log(`✅ README generation successful! Remaining generations: ${remaining}`);
       
       return NextResponse.json({
         success: true,
@@ -477,7 +381,6 @@ export async function POST(request: NextRequest) {
       });
     } catch (geminiError) {
       const errorMsg = geminiError instanceof Error ? geminiError.message : 'Unknown error';
-      console.error('❌ Gemini API error:', geminiError);
       
       return NextResponse.json(
         {
@@ -496,7 +399,6 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('❌ Unhandled error in API route:', error);
     
     return NextResponse.json(
       {

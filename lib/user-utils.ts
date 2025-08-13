@@ -25,7 +25,6 @@ export async function ensureUserExists(userId: string): Promise<{ success: boole
 
   if (fetchError && fetchError.code === 'PGRST116') {
     // User doesn't exist, create them
-    console.log('Creating new user:', userId)
     const { data: newUser, error: insertError } = await supabase
       .from('users')
       .insert({ 
@@ -39,13 +38,11 @@ export async function ensureUserExists(userId: string): Promise<{ success: boole
       .single()
 
     if (insertError) {
-      console.error('Error creating user:', insertError)
       return { success: false, readme_count: 0 }
     }
     
     return { success: true, readme_count: newUser?.readme_count || 0 }
   } else if (fetchError) {
-    console.error('Error fetching user:', fetchError)
     return { success: false, readme_count: 0 }
   }
 
@@ -98,7 +95,6 @@ export async function incrementReadmeCount(userId: string): Promise<{ success: b
     .single()
   
   if (error) {
-    console.error('Error incrementing readme count:', error)
     return { success: false }
   }
 

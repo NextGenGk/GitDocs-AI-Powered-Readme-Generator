@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUser } from '@clerk/nextjs';
-import { checkReadmeLimit, incrementReadmeCount } from '@/lib/readme-limiter';
+import { checkReadmeLimit } from '@/lib/readme-limiter';
 
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
@@ -131,9 +131,9 @@ import {
   RefreshCw, 
   Eye, 
   Edit,
-  Github,
-  Link
+  Github
 } from 'lucide-react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const formSchema = z.object({
@@ -185,6 +185,7 @@ export default function NeobrutalistDashboard() {
       
       try {
         const limitInfo = await checkReadmeLimit(user.id);
+        
         setUsageInfo({
           generationsUsed: limitInfo.generationsUsed,
           maxGenerations: 3,
@@ -192,7 +193,6 @@ export default function NeobrutalistDashboard() {
           isLimitReached: limitInfo.isLimitReached
         });
       } catch (error) {
-        console.error('Error checking readme limit:', error);
         setError('Failed to check your readme limit');
       }
     };
@@ -258,18 +258,14 @@ export default function NeobrutalistDashboard() {
       // Update markdown content
       setMarkdown(result.markdown);
       
-      // Increment readme count
-      const { success, remaining, error: incrementError } = await incrementReadmeCount(user.id);
-      if (success) {
+      // Update usage info from API response
+      if (result.generationsUsed !== undefined) {
         setUsageInfo(prev => ({
           ...prev,
-          generationsUsed: 3 - remaining,
-          remaining,
-          isLimitReached: remaining <= 0
+          generationsUsed: result.generationsUsed,
+          remaining: result.remaining || 0,
+          isLimitReached: result.isLimitReached || false
         }));
-      } else {
-        console.error('Failed to update readme count:', incrementError);
-        setError('Failed to update your readme count. Please try again.');
       }
       
       // Scroll to the result section
@@ -282,7 +278,6 @@ export default function NeobrutalistDashboard() {
       
     } catch (err: any) {
       setError(err.message || 'Failed to generate README. Please try again.');
-      console.error('Generation error:', err);
     } finally {
       setIsGenerating(false);
     }
@@ -314,11 +309,8 @@ export default function NeobrutalistDashboard() {
       } else {
         await navigator.clipboard.writeText(contentToCopy);
       }
-      
-      // You might want to show a toast notification here
-      console.log('Copied to clipboard');
+
     } catch (err) {
-      console.error('Failed to copy:', err);
       alert('Failed to copy to clipboard. Please try selecting and copying the text manually.');
     }
   };
@@ -418,7 +410,7 @@ export default function NeobrutalistDashboard() {
             {/* Usage Info */}
             <div className="bg-gray-100 p-4 border-2 border-black">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-bold text-sm">Daily Usage</span>
+                <span className="font-bold text-sm">Account Usage</span>
                 <span className="font-mono text-sm">
                   {usageInfo.generationsUsed} / {usageInfo.maxGenerations} generations
                 </span>
@@ -431,7 +423,7 @@ export default function NeobrutalistDashboard() {
               </div>
               {usageInfo.remaining === 0 && (
                 <p className="mt-2 text-xs text-red-600 font-medium text-center">
-                  Daily limit reached. Try again tomorrow or upgrade your plan.
+                  Account limit reached. You have used all 3 README generations for this account.
                 </p>
               )}
             </div>
@@ -571,6 +563,8 @@ export default function NeobrutalistDashboard() {
             </NeobrutalistCard>
           </div>
         )}
+
+
 
         {/* Three Boxes Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

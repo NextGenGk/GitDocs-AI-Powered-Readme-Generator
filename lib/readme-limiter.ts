@@ -26,7 +26,6 @@ export async function checkReadmeLimit(userId: string) {
       error: null
     };
   } catch (error) {
-    console.error('Error checking readme limit:', error);
     return {
       generationsUsed: 0,
       maxGenerations: 3,
@@ -63,7 +62,6 @@ export async function incrementReadmeCount(userId: string) {
     const remaining = Math.max(0, 3 - (data || 1));
     return { success: true, remaining };
   } catch (error) {
-    console.error('Error incrementing readme count:', error);
     return { success: false, error: 'Failed to update readme count' };
   }
 }
