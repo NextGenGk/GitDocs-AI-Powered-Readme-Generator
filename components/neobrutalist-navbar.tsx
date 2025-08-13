@@ -7,11 +7,11 @@ import { NeobrutalistButton } from "@/components/ui/neobrutalist-button";
 import { Menu, X } from "lucide-react";
 import { useBanner } from "@/contexts/BannerContext";
 
-const NavLink = ({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) => (
+const NavLink = ({ href, children, onClick, className = "" }: { href: string; children: React.ReactNode; onClick?: () => void; className?: string }) => (
   <Link 
     href={href} 
     onClick={onClick}
-    className="font-bold text-black hover:text-[#05e17a] transition-colors text-base px-3 py-2 rounded-lg hover:bg-black/5"
+    className={`font-bold text-black hover:text-[#05e17a] transition-colors text-base px-3 py-2 rounded-lg hover:bg-black/5 block w-full text-center md:text-left md:w-auto ${className}`}
   >
     {children}
   </Link>
@@ -30,7 +30,7 @@ export default function NeobrutalistNavbar() {
     // Show loading state until client is ready and Clerk is loaded
     if (!isClient || !isLoaded) {
         return (
-            <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-16' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
+            <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-[60px] sm:top-[64px]' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center h-16">
                         <div className="flex-shrink-0">
@@ -59,11 +59,11 @@ export default function NeobrutalistNavbar() {
                         {/* Mobile menu button */}
                         <div className="md:hidden ml-auto">
                             <button
-                                className="p-2 rounded-lg text-black hover:bg-black/5 transition-colors"
-                                aria-label="Menu"
-                                disabled
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                className="p-2 rounded-lg text-black hover:bg-black/5 transition-colors border-2 border-black"
+                                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
                             >
-                                <Menu size={24} />
+                                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                             </button>
                         </div>
                     </div>
@@ -73,10 +73,10 @@ export default function NeobrutalistNavbar() {
     }
 
     return (
-        <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-16' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
+        <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-[60px] sm:top-[64px]' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
             <div className="w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center h-16">
+                <div className="flex items-center h-16 flex-wrap">
                     {/* Logo - Left */}
                     <div className="flex-shrink-0">
                         <Link href="/" className="text-lg xs:text-xl sm:text-2xl font-black transform -rotate-1 hover:rotate-0 transition-transform group">
@@ -92,6 +92,41 @@ export default function NeobrutalistNavbar() {
                             <NavLink href="/">Home</NavLink>
                             <NavLink href="/feedback">Feedback</NavLink>
                             <NavLink href="/issues">Issues</NavLink>
+                        </div>
+                    </div>
+
+                    {/* Mobile Menu */}
+                    <div className={`w-full md:hidden ${isMenuOpen ? 'block' : 'hidden'} transition-all duration-300`}>
+                        <div className="flex flex-col items-center space-y-2 py-4 px-2 bg-[#f0fdf4] border-t-2 border-black">
+                            <NavLink href="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
+                            <NavLink href="/feedback" onClick={() => setIsMenuOpen(false)}>Feedback</NavLink>
+                            <NavLink href="/issues" onClick={() => setIsMenuOpen(false)}>Issues</NavLink>
+                            {isSignedIn ? (
+                                <div className="w-full flex justify-center">
+                                    <UserButton afterSignOutUrl="/" />
+                                </div>
+                            ) : (
+                                <>
+                                    <NavLink 
+                                        href="/sign-in" 
+                                        className="w-full max-w-xs mx-auto mt-2"
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        <NeobrutalistButton className="w-full">
+                                            Sign In
+                                        </NeobrutalistButton>
+                                    </NavLink>
+                                    <NavLink 
+                                        href="/sign-up" 
+                                        className="w-full max-w-xs mx-auto"
+                                        onClick={() => setIsMenuOpen(false)}
+                                    >
+                                        <NeobrutalistButton variant="secondary" className="w-full">
+                                            Sign Up
+                                        </NeobrutalistButton>
+                                    </NavLink>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -136,36 +171,62 @@ export default function NeobrutalistNavbar() {
 
                 {/* Mobile Navigation */}
                 {isMenuOpen && (
-                    <div className="md:hidden border-t-2 sm:border-t-4 border-black">
-                        <div className="p-3 xs:p-4 space-y-3 bg-white">
-                            <NavLink href="/" onClick={() => setIsMenuOpen(false)}>Home</NavLink>
-                            <NavLink href="/feedback" onClick={() => setIsMenuOpen(false)}>Feedback</NavLink>
-                            <NavLink href="/issues" onClick={() => setIsMenuOpen(false)}>Issues</NavLink>
-                            {isSignedIn ? (
-                                <div className="space-y-3 pt-2">
-                                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                                        <NeobrutalistButton size="sm" variant="primary" className="w-full h-12 text-sm font-bold">
-                                            Dashboard
-                                        </NeobrutalistButton>
-                                    </Link>
-                                    <div className="flex justify-center py-2">
-                                        <UserButton afterSignOutUrl="/" />
+                    <div className="md:hidden border-t-2 sm:border-t-4 border-black bg-white">
+                        <div className="p-4 space-y-4">
+                            {/* Navigation Links Section */}
+                            <div className="space-y-2">
+                                <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Navigation</div>
+                                <div className="space-y-1">
+                                    <NavLink href="/" onClick={() => setIsMenuOpen(false)}>
+                                        <div className="block py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors border-l-4 border-transparent hover:border-[#05e17a]">
+                                            Home
+                                        </div>
+                                    </NavLink>
+                                    <NavLink href="/feedback" onClick={() => setIsMenuOpen(false)}>
+                                        <div className="block py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors border-l-4 border-transparent hover:border-[#05e17a]">
+                                            Feedback
+                                        </div>
+                                    </NavLink>
+                                    <NavLink href="/issues" onClick={() => setIsMenuOpen(false)}>
+                                        <div className="block py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors border-l-4 border-transparent hover:border-[#05e17a]">
+                                            Issues
+                                        </div>
+                                    </NavLink>
+                                </div>
+                            </div>
+
+                            {/* Divider */}
+                            <div className="border-t-2 border-gray-100"></div>
+
+                            {/* Auth Section */}
+                            <div className="space-y-3">
+                                <div className="text-xs font-bold text-gray-500 uppercase tracking-wide">Account</div>
+                                {isSignedIn ? (
+                                    <div className="space-y-3">
+                                        <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                                            <NeobrutalistButton size="sm" variant="primary" className="w-full h-12 text-sm font-bold">
+                                                Dashboard
+                                            </NeobrutalistButton>
+                                        </Link>
+                                        <div className="flex justify-center py-2">
+                                            <UserButton afterSignOutUrl="/" />
+                                        </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="space-y-3 pt-2">
-                                    <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
-                                        <NeobrutalistButton size="sm" variant="outline" className="w-full h-12 text-sm font-bold">
-                                            Sign In
-                                        </NeobrutalistButton>
-                                    </Link>
-                                    <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
-                                        <NeobrutalistButton size="sm" variant="default" className="w-full h-12 text-sm font-bold">
-                                            Sign Up
-                                        </NeobrutalistButton>
-                                    </Link>
-                                </div>
-                            )}
+                                ) : (
+                                    <div className="space-y-3">
+                                        <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
+                                            <NeobrutalistButton size="sm" variant="outline" className="w-full h-12 text-sm font-bold">
+                                                Sign In
+                                            </NeobrutalistButton>
+                                        </Link>
+                                        <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
+                                            <NeobrutalistButton size="sm" variant="default" className="w-full h-12 text-sm font-bold">
+                                                Sign Up
+                                            </NeobrutalistButton>
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}

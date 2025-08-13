@@ -19,7 +19,7 @@ function IssuesContent() {
     <div className="min-h-screen bg-[#f0fdf4]">
       <NewUIBanner />
       <NeobrutalistNavbar />
-      <div className={`container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl min-h-[calc(100vh-80px)] flex flex-col ${isBannerVisible ? 'pt-24 sm:pt-28' : 'pt-20 sm:pt-24'}`}>
+      <div className={`container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl min-h-[calc(100vh-80px)] flex flex-col ${isBannerVisible ? 'pt-[140px] sm:pt-[144px]' : 'pt-20 sm:pt-24'}`}>
         <div className="text-center mb-8 sm:mb-12 group px-2">
           <h1 className="text-2xl xs:text-3xl sm:text-4xl font-black mb-4 text-center">
             <span className="
@@ -51,23 +51,24 @@ function IssuesContent() {
           <p className="mb-4 sm:mb-6 text-sm sm:text-base text-gray-700 group-hover:text-gray-900 transition-colors duration-300 leading-relaxed">
             Report bugs, request features, or suggest improvements to help us make GitDocs better for everyone.
           </p>
-          <button
-            onClick={handleReportClick}
-            className="
-              px-4 py-2 bg-black text-white font-bold text-sm
-              border-2 border-black 
-              hover:bg-[#05e17a] hover:text-black 
-              hover:border-[#05e17a]
-              transform hover:scale-105
-              active:scale-95
-              transition-all duration-200 ease-in-out
-              shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
-              hover:shadow-[4px_4px_0px_0px_rgba(5,225,122,1)]
-              inline-block
-            "
-          >
-            Report Issue
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={handleReportClick}
+              className="
+                px-4 py-2 bg-black text-white font-bold text-sm
+                border-2 border-black 
+                hover:bg-[#05e17a] hover:text-black 
+                hover:border-[#05e17a]
+                transform hover:scale-105
+                active:scale-95
+                transition-all duration-200 ease-in-out
+                shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]
+                hover:shadow-[4px_4px_0px_0px_rgba(5,225,122,1)]
+              "
+            >
+              Report Issue
+            </button>
+          </div>
           <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-500 leading-relaxed">
             Your issue report will be sent to gauravkumar4841@gmail.com
           </p>
