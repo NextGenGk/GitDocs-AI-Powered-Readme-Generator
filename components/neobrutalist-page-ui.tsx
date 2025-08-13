@@ -31,25 +31,37 @@ const NeobrutalistFooter = dynamic(
 export default function NeobrutalistPageUI() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* 1. Navbar */}
-      <NeobrutalistNavbar />
+      {/* Navigation */}
+      <header role="banner">
+        <NeobrutalistNavbar />
+      </header>
       
-      <main className="flex-1">
-        {/* 2. Hero Banner */}
-        <NeobrutalistBanner noPadding={true} />
+      <main className="flex-1" role="main">
+        {/* Hero Section */}
+        <section aria-label="Hero section - AI README Generator introduction">
+          <NeobrutalistBanner noPadding={true} />
+        </section>
         
-        {/* 3. Features */}
-        <NeobrutalistFeatures noPadding={true} />
+        {/* Features Section */}
+        <section aria-label="Features and benefits of GitDocs README generator">
+          <NeobrutalistFeatures noPadding={true} />
+        </section>
         
-        {/* 4. FAQ */}
-        <NeobrutalistFaq noPadding={true} />
+        {/* FAQ Section */}
+        <section aria-label="Frequently asked questions about README generation">
+          <NeobrutalistFaq noPadding={true} />
+        </section>
         
-        {/* 5. CTA - Moved after FAQ */}
-        <NeobrutalistCta noPadding={true} />
+        {/* Call to Action Section */}
+        <section aria-label="Get started with GitDocs README generator">
+          <NeobrutalistCta noPadding={true} />
+        </section>
       </main>
       
-      {/* 6. Footer */}
-      <NeobrutalistFooter noPadding={true} />
+      {/* Footer */}
+      <footer role="contentinfo">
+        <NeobrutalistFooter noPadding={true} />
+      </footer>
     </div>
   );
 }

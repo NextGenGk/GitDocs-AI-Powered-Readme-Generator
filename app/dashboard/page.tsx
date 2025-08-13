@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
+import Head from 'next/head';
 
 // Simple loading component that matches server and client render
 function LoadingSpinner() {
@@ -32,8 +33,17 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="w-full">
-      {isClient ? <NeobrutalistDashboard /> : <LoadingSpinner />}
-    </div>
+    <>
+      <Head>
+        <title>Dashboard - Generate README | GitDocs AI</title>
+        <meta name="description" content="Generate professional README files for your GitHub repositories using AI. Create comprehensive documentation with installation guides, usage examples, and more." />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://gitdocs.vercel.app/dashboard" />
+      </Head>
+      <main className="w-full" role="main">
+        <h1 className="sr-only">README Generator Dashboard - Create Professional GitHub Documentation</h1>
+        {isClient ? <NeobrutalistDashboard /> : <LoadingSpinner />}
+      </main>
+    </>
   );
 }
