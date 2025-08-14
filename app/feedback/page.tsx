@@ -1,7 +1,6 @@
 "use client";
 
 import Link from 'next/link';
-import { MessageSquare } from 'lucide-react';
 import NeobrutalistFooter from '@/components/neobrutalist-footer';
 import NeobrutalistNavbar from '@/components/neobrutalist-navbar';
 import { BannerProvider, useBanner } from '@/contexts/BannerContext';
@@ -17,12 +16,13 @@ function FeedbackContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f0fdf4]">
+    <div className="min-h-screen bg-[#f0fdf4] bg-fixed">
       <NewUIBanner />
       <NeobrutalistNavbar />
-      <div className={`container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl min-h-[calc(100vh-80px)] flex flex-col ${isBannerVisible ? 'pt-[140px] sm:pt-[144px]' : 'pt-20 sm:pt-24'}`}>
-        <div className="text-center mb-8 sm:mb-12 group px-2">
-          <h1 className="text-2xl xs:text-3xl sm:text-4xl font-black mb-4 text-center">
+      <div className={`w-full transition-all duration-300 ease-in-out ${isBannerVisible ? 'pt-[116px] sm:pt-[124px]' : 'pt-20 sm:pt-24'} pb-4 sm:pb-6`}>
+        <div className="container mx-auto max-w-4xl px-3 sm:px-4 md:px-6 lg:px-8 flex flex-col items-center space-y-4 sm:space-y-6 py-4 sm:py-6">
+        <div className="text-center group w-full">
+          <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 text-center">
             <span className="
               inline-block px-3 xs:px-4 py-2 bg-[#05e17a] text-white 
               shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transform -rotate-1
@@ -33,23 +33,19 @@ function FeedbackContent() {
               SHARE YOUR FEEDBACK
             </span>
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm xs:text-base sm:text-lg md:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
             Help us make GitDocs even better! Your feedback is valuable to us.
           </p>
         </div>
 
         <div className="
-          bg-white border-2 sm:border-4 border-black p-4 xs:p-6 sm:p-8 mb-8 sm:mb-12 mx-2 sm:mx-0
-          shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] 
-          hover:shadow-[6px_6px_0px_0px_rgba(5,225,122,1)] sm:hover:shadow-[12px_12px_0px_0px_rgba(5,225,122,1)]
+          bg-white border-2 sm:border-3 md:border-4 border-black p-4 xs:p-5 sm:p-6 md:p-8 lg:p-10
+          shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] sm:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] lg:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]
+          hover:shadow-[4px_4px_0px_0px_rgba(5,225,122,1)] sm:hover:shadow-[6px_6px_0px_0px_rgba(5,225,122,1)] md:hover:shadow-[8px_8px_0px_0px_rgba(5,225,122,1)] lg:hover:shadow-[12px_12px_0px_0px_rgba(5,225,122,1)]
           transition-all duration-300 ease-in-out
           transform hover:-translate-y-1
-          text-center
+          text-center w-full max-w-2xl
         ">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#05e17a] rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-            <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-          </div>
-          
           <h2 className="text-lg xs:text-xl sm:text-2xl font-black mb-3 sm:mb-4 group-hover:text-[#05e17a] transition-colors duration-300">
             Send Us Your Feedback
           </h2>
@@ -81,10 +77,11 @@ function FeedbackContent() {
           </p>
         </div>
         
-        <div className="mt-8 text-center">
-          <Link href="/" className="text-[#05e17a] hover:underline font-medium">
+        <div className="text-center w-full">
+          <Link href="/" className="text-sm xs:text-base text-[#05e17a] hover:underline font-medium transition-colors inline-flex items-center">
             ← Back to Home
           </Link>
+        </div>
         </div>
       </div>
       <NeobrutalistFooter />

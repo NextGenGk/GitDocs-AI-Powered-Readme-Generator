@@ -3,6 +3,10 @@
 import dynamic from 'next/dynamic';
 
 // Dynamically import components to avoid SSR issues
+const NewUIBanner = dynamic(
+  () => import('@/components/NewUIBanner'),
+  { ssr: false }
+);
 const NeobrutalistNavbar = dynamic(
   () => import('@/components/neobrutalist-navbar'),
   { ssr: false }
@@ -31,6 +35,9 @@ const NeobrutalistFooter = dynamic(
 export default function NeobrutalistPageUI() {
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Banner */}
+      <NewUIBanner />
+      
       {/* Navigation */}
       <header role="banner">
         <NeobrutalistNavbar />

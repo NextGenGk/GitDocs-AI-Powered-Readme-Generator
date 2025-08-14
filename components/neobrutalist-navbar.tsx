@@ -30,7 +30,7 @@ export default function NeobrutalistNavbar() {
     // Show loading state until client is ready and Clerk is loaded
     if (!isClient || !isLoaded) {
         return (
-            <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-[60px] sm:top-[64px]' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
+            <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-[52px]' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center h-16">
                         <div className="flex-shrink-0">
@@ -73,7 +73,7 @@ export default function NeobrutalistNavbar() {
     }
 
     return (
-        <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-[60px] sm:top-[64px]' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
+        <nav className={`bg-white border-b-4 border-black shadow-[0_4px_0px_0px_rgba(5,225,122,0.3)] fixed ${isBannerVisible ? 'top-[52px]' : 'top-0'} left-0 right-0 z-50 transition-all duration-300`}>
             <div className="w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center h-16 flex-wrap">

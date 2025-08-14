@@ -6,7 +6,7 @@ import { NeobrutalistButton } from '@/components/ui/neobrutalist-button';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#f0fdf4] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#f0fdf4] bg-fixed flex items-center justify-center px-4 py-12">
       <div className="max-w-2xl w-full text-center">
         {/* 404 Header */}
         <div className="mb-8">

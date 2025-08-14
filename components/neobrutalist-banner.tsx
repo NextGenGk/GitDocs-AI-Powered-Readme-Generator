@@ -11,7 +11,7 @@ interface NeobrutalistBannerProps {
 export default function NeobrutalistBanner({ noPadding = false }: NeobrutalistBannerProps) {
 
     return (
-        <section className="relative min-h-screen bg-[#2ecc71] flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-screen bg-[#2ecc71] flex justify-center overflow-hidden">
             {/* Grid Background */}
             <div className="absolute inset-0 opacity-15">
                 <div className="h-full w-full" style={{
@@ -51,7 +51,7 @@ export default function NeobrutalistBanner({ noPadding = false }: NeobrutalistBa
             `}</style>
 
             {/* Content */}
-            <div className="relative z-10 w-full py-4 sm:py-8">
+            <div className="relative z-10 w-full pt-12 sm:pt-16 md:pt-20 lg:pt-24">
                 <header className="text-center px-4 sm:px-6 lg:px-8 w-full max-w-4xl mx-auto">
                 <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-black mb-4 sm:mb-6 transform -rotate-1">
                     <span className="inline-block px-2 xs:px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] md:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
@@ -61,7 +61,7 @@ export default function NeobrutalistBanner({ noPadding = false }: NeobrutalistBa
                 <h2 className="text-base xs:text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-6 md:mb-8 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] sm:drop-shadow-[3px_3px_0px_rgba(0,0,0,1)] px-2 leading-tight">
                     Create Professional READMEs in Seconds with AI
                 </h2>
-                <p className="text-sm xs:text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 md:mb-10 lg:mb-12 max-w-2xl mx-auto leading-relaxed px-2">
+                <p className="text-sm xs:text-base sm:text-lg md:text-xl text-white/90 mb-4 sm:mb-6 md:mb-8 lg:mb-10 max-w-2xl mx-auto leading-relaxed px-2">
                     Transform your GitHub repositories into professional README files with intelligent AI. Generate comprehensive documentation, installation guides, and usage examples in seconds.
                 </p>
                 

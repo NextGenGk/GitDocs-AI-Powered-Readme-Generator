@@ -135,6 +135,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import NeobrutalistFooter from '@/components/neobrutalist-footer';
+import { useBanner } from '@/contexts/BannerContext';
 
 const formSchema = z.object({
   githubUrl: z.string()
@@ -156,8 +158,10 @@ interface UsageInfo {
 // Main dashboard component
 export default function NeobrutalistDashboard() {
   const { user, isLoaded: isUserLoaded } = useUser();
+  const { isBannerVisible } = useBanner();
   const [markdown, setMarkdown] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [loadingStage, setLoadingStage] = useState('');
   const [error, setError] = useState('');
   const [usageInfo, setUsageInfo] = useState<UsageInfo>({
     generationsUsed: 0,
@@ -232,9 +236,21 @@ export default function NeobrutalistDashboard() {
 
     setActiveTab('preview');
     setIsGenerating(true);
+    setLoadingStage('Analyzing repository...');
     setError('');
     
     try {
+      // Stage 1: Analyzing
+      setLoadingStage('Analyzing repository structure...');
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Stage 2: Processing
+      setLoadingStage('Processing files and dependencies...');
+      await new Promise(resolve => setTimeout(resolve, 600));
+      
+      // Stage 3: Generating
+      setLoadingStage('Generating README content...');
+      
       const response = await fetch('/api/github-to-markdown', {
         method: 'POST',
         headers: {
@@ -254,6 +270,10 @@ export default function NeobrutalistDashboard() {
       if (!result.markdown) {
         throw new Error('No markdown content was generated');
       }
+      
+      // Stage 4: Finalizing
+      setLoadingStage('Finalizing README...');
+      await new Promise(resolve => setTimeout(resolve, 400));
       
       // Update markdown content
       setMarkdown(result.markdown);
@@ -280,6 +300,7 @@ export default function NeobrutalistDashboard() {
       setError(err.message || 'Failed to generate README. Please try again.');
     } finally {
       setIsGenerating(false);
+      setLoadingStage('');
     }
   };
 
@@ -334,9 +355,9 @@ export default function NeobrutalistDashboard() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#f0fdf4]">
-      <div className="w-full py-4 sm:py-6 md:py-8 lg:py-12">
-        <div className="max-w-6xl mx-auto px-2 xs:px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 md:space-y-8 lg:space-y-12">
+    <div className="w-full min-h-screen bg-[#f0fdf4] bg-fixed">
+      <div className={`w-full transition-all duration-300 ease-in-out ${isBannerVisible ? 'pt-[68px] sm:pt-[76px] md:pt-[80px] lg:pt-[84px] xl:pt-[88px]' : 'pt-16 sm:pt-20 md:pt-24 lg:pt-28 xl:pt-32'} pb-0 sm:pb-0 md:pb-1 lg:pb-2 xl:pb-4`}>
+        <div className="max-w-6xl mx-auto px-2 xs:px-3 sm:px-4 lg:px-6 space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-4 py-0 sm:py-0 md:py-1 lg:py-2">
         {/* Header Section */}
         <div className="text-center px-2">
           <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black mb-2 leading-tight">GitHub README Generator</h1>
@@ -397,7 +418,9 @@ export default function NeobrutalistDashboard() {
                       {isGenerating ? (
                         <div className="flex items-center justify-center space-x-2">
                           <RefreshCw className="w-4 h-4 animate-spin" />
-                          <span>Generating</span>
+                          <span className="text-xs sm:text-sm">
+                            {loadingStage || 'Generating...'}
+                          </span>
                         </div>
                       ) : (
                         <span>Generate</span>
@@ -539,9 +562,16 @@ export default function NeobrutalistDashboard() {
                           </div>
                           {isGenerating ? (
                             <div className="flex items-center justify-center py-12">
-                              <div className="text-center">
-                                <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mb-4 mx-auto"></div>
-                                <p className="text-gray-600 font-medium">Generating your README...</p>
+                              <div className="text-center space-y-4">
+                                <div className="w-12 h-12 border-4 border-[#05e17a] border-t-transparent rounded-full animate-spin mb-4 mx-auto"></div>
+                                <div className="space-y-2">
+                                  <p className="text-gray-800 font-bold text-lg">
+                                    {loadingStage || 'Generating your README...'}
+                                  </p>
+                                  <p className="text-gray-600 text-sm">
+                                    Please wait while we create your professional README
+                                  </p>
+                                </div>
                               </div>
                             </div>
                           ) : (
@@ -568,7 +598,7 @@ export default function NeobrutalistDashboard() {
 
 
         {/* Three Boxes Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12 md:mt-16 lg:mt-20">
           <NeobrutalistCard className="border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] h-full flex flex-col">
             <NeobrutalistCardHeader className="border-b-2 border-black p-4">
               <NeobrutalistCardTitle className="text-lg font-black">
@@ -576,7 +606,7 @@ export default function NeobrutalistDashboard() {
               </NeobrutalistCardTitle>
             </NeobrutalistCardHeader>
             <NeobrutalistCardContent className="p-4 flex-grow flex flex-col justify-between">
-              <p className="text-gray-700 mb-4 flex-grow">Get started by pasting your GitHub repository URL above and clicking generate. Our AI will analyze your repository and create a comprehensive README.</p>
+              <p className="text-gray-700 mb-4 flex-grow text-sm">Paste your GitHub URL and let AI create a professional README instantly.</p>
               <div className="flex items-center text-sm text-gray-600 mt-auto">
                 <span className="w-6 h-6 rounded-full bg-[#05e17a] flex items-center justify-center text-white font-bold mr-2">1</span>
                 <span>Paste GitHub URL</span>
@@ -591,7 +621,7 @@ export default function NeobrutalistDashboard() {
               </NeobrutalistCardTitle>
             </NeobrutalistCardHeader>
             <NeobrutalistCardContent className="p-4 flex-grow flex flex-col justify-between">
-              <p className="text-gray-700 mb-4 flex-grow">Easily customize your README with our intuitive editor. Switch between preview and source modes to fine-tune your documentation exactly how you want it.</p>
+              <p className="text-gray-700 mb-4 flex-grow text-sm">Edit and preview your README with our built-in editor. Perfect your docs in real-time.</p>
               <div className="flex items-center text-sm text-gray-600 mt-auto">
                 <span className="w-6 h-6 rounded-full bg-[#05e17a] flex items-center justify-center text-white font-bold mr-2">2</span>
                 <span>Edit & Preview</span>
@@ -606,7 +636,7 @@ export default function NeobrutalistDashboard() {
               </NeobrutalistCardTitle>
             </NeobrutalistCardHeader>
             <NeobrutalistCardContent className="p-4 flex-grow flex flex-col justify-between">
-              <p className="text-gray-700 mb-4 flex-grow">Download your README as a markdown file or copy it to clipboard with one click. Perfect for immediately adding to your GitHub repository and sharing with your team.</p>
+              <p className="text-gray-700 mb-4 flex-grow text-sm">Download as .md file or copy to clipboard. Ready to add to your GitHub repo instantly.</p>
               <div className="flex items-center text-sm text-gray-600 mt-auto">
                 <span className="w-6 h-6 rounded-full bg-[#05e17a] flex items-center justify-center text-white font-bold mr-2">3</span>
                 <span>Download & Share</span>
@@ -617,12 +647,13 @@ export default function NeobrutalistDashboard() {
       </div>
       
       {/* Back to Home Button */}
-      <div className="mt-8 text-center">
+      <div className="mt-8 sm:mt-12 md:mt-16 lg:mt-20 mb-8 sm:mb-12 md:mb-16 lg:mb-20 text-center">
           <Link href="/" className="text-[#05e17a] hover:underline font-medium">
             ← Back to Home
           </Link>
         </div>
       </div>
+      <NeobrutalistFooter />
     </div>
   );
 }
