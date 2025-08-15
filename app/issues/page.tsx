@@ -19,7 +19,7 @@ function IssuesContent() {
     <div className="min-h-screen bg-[#f0fdf4] bg-fixed">
       <NewUIBanner />
       <NeobrutalistNavbar />
-      <div className={`w-full transition-all duration-300 ease-in-out ${isBannerVisible ? 'pt-[116px] sm:pt-[124px]' : 'pt-20 sm:pt-24'} pb-4 sm:pb-6`}>
+      <div className={`w-full transition-all duration-300 ease-in-out ${isBannerVisible ? 'pt-[76px] sm:pt-[84px]' : 'pt-8 sm:pt-12'} pb-4 sm:pb-6`}>
         <div className="container mx-auto max-w-4xl px-3 sm:px-4 md:px-6 lg:px-8 flex flex-col items-center space-y-4 sm:space-y-6 py-4 sm:py-6">
         <div className="text-center group w-full">
           <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 text-center">
