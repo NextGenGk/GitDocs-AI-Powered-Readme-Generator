@@ -161,7 +161,6 @@ export default function NeobrutalistDashboard() {
   const { isBannerVisible } = useBanner();
   const [markdown, setMarkdown] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [loadingStage, setLoadingStage] = useState('');
   const [error, setError] = useState('');
   const [usageInfo, setUsageInfo] = useState<UsageInfo>({
     generationsUsed: 0,
@@ -236,21 +235,9 @@ export default function NeobrutalistDashboard() {
 
     setActiveTab('preview');
     setIsGenerating(true);
-    setLoadingStage('Analyzing repository...');
     setError('');
     
     try {
-      // Stage 1: Analyzing
-      setLoadingStage('Analyzing repository structure...');
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Stage 2: Processing
-      setLoadingStage('Processing files and dependencies...');
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
-      // Stage 3: Generating
-      setLoadingStage('Generating README content...');
-      
       const response = await fetch('/api/github-to-markdown', {
         method: 'POST',
         headers: {
@@ -270,10 +257,6 @@ export default function NeobrutalistDashboard() {
       if (!result.markdown) {
         throw new Error('No markdown content was generated');
       }
-      
-      // Stage 4: Finalizing
-      setLoadingStage('Finalizing README...');
-      await new Promise(resolve => setTimeout(resolve, 400));
       
       // Update markdown content
       setMarkdown(result.markdown);
@@ -300,7 +283,6 @@ export default function NeobrutalistDashboard() {
       setError(err.message || 'Failed to generate README. Please try again.');
     } finally {
       setIsGenerating(false);
-      setLoadingStage('');
     }
   };
 
@@ -419,7 +401,7 @@ export default function NeobrutalistDashboard() {
                         <div className="flex items-center justify-center space-x-2">
                           <RefreshCw className="w-4 h-4 animate-spin" />
                           <span className="text-xs sm:text-sm">
-                            {loadingStage || 'Generating...'}
+                            Generating...
                           </span>
                         </div>
                       ) : (
@@ -566,7 +548,7 @@ export default function NeobrutalistDashboard() {
                                 <div className="w-12 h-12 border-4 border-[#05e17a] border-t-transparent rounded-full animate-spin mb-4 mx-auto"></div>
                                 <div className="space-y-2">
                                   <p className="text-gray-800 font-bold text-lg">
-                                    {loadingStage || 'Generating your README...'}
+                                    Generating your README...
                                   </p>
                                   <p className="text-gray-600 text-sm">
                                     Please wait while we create your professional README
