@@ -382,8 +382,8 @@ function isValidGithubUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
     return (
-        parsedUrl.hostname === 'github.com' &&
-        parsedUrl.pathname.split('/').filter(Boolean).length >= 2
+      parsedUrl.hostname === 'github.com' &&
+      parsedUrl.pathname.split('/').filter(Boolean).length >= 2
     );
   } catch (error) {
     return false;
@@ -395,16 +395,17 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
     // Extract repository information from the GitHub URL
     const url = new URL(githubUrl);
     const pathParts = url.pathname.split('/').filter(Boolean);
-    
+
     if (pathParts.length < 2) {
       throw new Error(`Invalid GitHub URL format. Expected: https://github.com/owner/repo, got: ${githubUrl}`);
     }
-    
+
     const [owner, repo] = pathParts;
-    
+
     // Fetch repository details from GitHub API
     const repoUrl = `https://api.github.com/repos/${owner}/${repo}`;
-    
+
+    console.log(`Fetching GitHub repo data: ${repoUrl}`);
     const repoResponse = await fetch(repoUrl, {
       headers: {
         'Accept': 'application/vnd.github.v3+json',
@@ -413,7 +414,16 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
     });
 
     if (!repoResponse.ok) {
-      throw new Error(`GitHub API error: ${repoResponse.status} ${repoResponse.statusText}`);
+      const errorText = await repoResponse.text();
+      console.error(`GitHub API error: ${repoResponse.status} ${repoResponse.statusText}`, errorText);
+
+      if (repoResponse.status === 404) {
+        throw new Error(`Repository not found. Please check that the repository exists and is public: ${githubUrl}`);
+      } else if (repoResponse.status === 403) {
+        throw new Error(`Access denied. The repository may be private or you've hit GitHub's rate limit.`);
+      } else {
+        throw new Error(`GitHub API error: ${repoResponse.status} ${repoResponse.statusText}`);
+      }
     }
 
     const repoData = await repoResponse.json();
@@ -432,6 +442,7 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
 `;
 
     // Call Gemini API with proper formatting
+    console.log('Calling Gemini API...');
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
@@ -460,11 +471,13 @@ async function generateReadmeWithGemini(githubUrl: string, apiKey: string): Prom
     );
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Gemini API error: ${response.status} ${response.statusText}`, errorText);
       throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
-    
+
     if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
       const generatedText = data.candidates[0].content.parts[0].text;
       return generatedText;
@@ -486,10 +499,10 @@ export async function GET() {
 
     // Get user data from database
     const { data, error } = await supabase
-        .from('users')
-        .select('readme_count')
-        .eq('id', userId)
-        .single();
+      .from('users')
+      .select('readme_count')
+      .eq('id', userId)
+      .single();
 
     let currentCount = 0;
 
@@ -498,8 +511,8 @@ export async function GET() {
         // User not found, try to create new user
         const { data: newUser, error: createError } = await supabase
           .from('users')
-          .upsert({ 
-            id: userId, 
+          .upsert({
+            id: userId,
             readme_count: 0,
             email: null,
             name: null,
@@ -510,7 +523,7 @@ export async function GET() {
           })
           .select('readme_count')
           .single();
-          
+
         if (createError) {
           currentCount = 0;
         } else {
@@ -529,10 +542,11 @@ export async function GET() {
       remaining: DEFAULT_GENERATION_LIMIT - currentCount,
       isLimitReached: currentCount >= DEFAULT_GENERATION_LIMIT
     });
-  } catch (error) {
+  } catch (err) {
+    console.error('Error fetching user data:', err);
     return NextResponse.json(
-        { error: 'Failed to fetch user data' },
-        { status: 500 }
+      { error: 'Failed to fetch user data' },
+      { status: 500 }
     );
   }
 }
@@ -560,8 +574,8 @@ export async function POST(request: NextRequest) {
         // User not found, try to create new user
         const { data: newUser, error: createError } = await supabase
           .from('users')
-          .upsert({ 
-            id: userId, 
+          .upsert({
+            id: userId,
             readme_count: 0,
             email: null,
             name: null,
@@ -572,7 +586,7 @@ export async function POST(request: NextRequest) {
           })
           .select('readme_count')
           .single();
-          
+
         if (createError) {
           currentCount = 0;
         } else {
@@ -605,17 +619,17 @@ export async function POST(request: NextRequest) {
     try {
       const parsedBody = await parseRequestBody(request);
       githubUrl = parsedBody.githubUrl;
-      
+
       if (!githubUrl) {
         throw new Error('Missing githubUrl in request body');
       }
     } catch (parseError) {
-      const errorMsg = parseError instanceof Error 
-        ? parseError.message 
+      const errorMsg = parseError instanceof Error
+        ? parseError.message
         : 'Unknown error parsing request body';
-      
+
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid request format',
           details: errorMsg,
           code: 'INVALID_REQUEST_FORMAT'
@@ -626,7 +640,7 @@ export async function POST(request: NextRequest) {
 
     if (!isValidGithubUrl(githubUrl)) {
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid GitHub repository URL. Expected format: https://github.com/username/repository',
           receivedUrl: githubUrl,
           code: 'INVALID_GITHUB_URL'
@@ -638,7 +652,7 @@ export async function POST(request: NextRequest) {
     const geminiApiKey = process.env.GEMINI_API_KEY;
     if (!geminiApiKey) {
       return NextResponse.json(
-        { 
+        {
           error: 'Service temporarily unavailable',
           code: 'SERVICE_UNAVAILABLE'
         },
@@ -647,11 +661,13 @@ export async function POST(request: NextRequest) {
     }
 
     try {
+      console.log(`Generating README for: ${githubUrl}`);
       const markdownContent = await generateReadmeWithGemini(githubUrl, geminiApiKey);
-      
+      console.log(`README generated successfully, length: ${markdownContent.length}`);
+
       // Update user count in database
       const newCount = currentCount + 1;
-      
+
       // Try direct update first
       const { error: updateError } = await supabase
         .from('users')
@@ -662,8 +678,8 @@ export async function POST(request: NextRequest) {
       if (updateError) {
         await supabase
           .from('users')
-          .upsert({ 
-            id: userId, 
+          .upsert({
+            id: userId,
             readme_count: newCount,
             email: null,
             name: null,
@@ -676,7 +692,7 @@ export async function POST(request: NextRequest) {
 
       const remaining = Math.max(0, DEFAULT_GENERATION_LIMIT - newCount);
       const isLimitReached = newCount >= DEFAULT_GENERATION_LIMIT;
-      
+
       return NextResponse.json({
         success: true,
         markdown: markdownContent,
@@ -687,12 +703,28 @@ export async function POST(request: NextRequest) {
         timestamp: new Date().toISOString()
       });
     } catch (geminiError) {
+      console.error('Generation Error:', geminiError);
       const errorMsg = geminiError instanceof Error ? geminiError.message : 'Unknown error';
-      
+
+      // Determine appropriate status code based on error type
+      let statusCode = 500;
+      let userFriendlyError = 'Failed to generate README';
+
+      if (errorMsg.includes('Repository not found')) {
+        statusCode = 404;
+        userFriendlyError = 'Repository not found';
+      } else if (errorMsg.includes('Access denied')) {
+        statusCode = 403;
+        userFriendlyError = 'Repository access denied';
+      } else if (errorMsg.includes('GitHub API error')) {
+        statusCode = 400;
+        userFriendlyError = 'GitHub repository error';
+      }
+
       return NextResponse.json(
         {
           success: false,
-          error: 'Failed to generate README',
+          error: userFriendlyError,
           details: errorMsg,
           code: 'GENERATION_FAILED',
           generationsUsed: currentCount,
@@ -701,12 +733,13 @@ export async function POST(request: NextRequest) {
           isLimitReached: currentCount >= DEFAULT_GENERATION_LIMIT,
           timestamp: new Date().toISOString()
         },
-        { status: 500 }
+        { status: statusCode }
       );
     }
-  } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    
+  } catch (err) {
+    console.error('Internal server error:', err);
+    const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+
     return NextResponse.json(
       {
         success: false,
