@@ -28,7 +28,7 @@ export default function NeobrutalistCta({ noPadding = false }: NeobrutalistCtaPr
               <p className="text-gray-600 mb-6">
                 We&apos;re here to help! Reach out to our support team for any inquiries or assistance.
               </p>
-              <div className="flex justify-start">
+              <div className="flex justify-center md:justify-start">
                 <a 
                   href="mailto:gauravkumar4841@gmail.com" 
                   className="
