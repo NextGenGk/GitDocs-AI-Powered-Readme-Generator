@@ -2,6 +2,9 @@
 
 A web application that converts GitHub repository links to polished README.md files using AI. The application allows users to input a GitHub repository URL, generates a comprehensive README.md file, and provides options to edit and download the result.
 
+## Featured Video
+https://github.com/user-attachments/assets/c05cb2b2-17b9-4a15-bcb2-1dfca2dff95d
+
 ## Features
 
 - Convert GitHub repository links to README.md files
