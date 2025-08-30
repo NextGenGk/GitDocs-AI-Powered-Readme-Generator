@@ -2,11 +2,7 @@
 
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from "@/lib/supabase";
 
 export default function UserSyncer() {
   const { isLoaded, isSignedIn, user } = useUser();
@@ -16,11 +12,6 @@ export default function UserSyncer() {
       // Sync user data with Supabase
       const syncUser = async () => {
         try {
-          // Check if Supabase client is properly initialized
-          if (!supabaseUrl || !supabaseKey) {
-            return;
-          }
-
           // Prepare user data
           const userData = {
             id: user.id,

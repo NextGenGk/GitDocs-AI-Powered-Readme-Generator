@@ -37,7 +37,20 @@ CREATE INDEX IF NOT EXISTS idx_users_id ON public.users(id);
 CREATE INDEX IF NOT EXISTS idx_users_readme_count ON public.users(readme_count);
 
 -- ============================================================================
--- 5. CREATE UPDATED_AT TRIGGER
+-- 5. ADD MISSING COLUMNS (for existing tables)
+-- ============================================================================
+
+-- Add timestamp columns if they don't exist (for existing installations)
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS created_at timestamp with time zone DEFAULT now();
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS updated_at timestamp with time zone DEFAULT now();
+
+-- Update existing users to have proper timestamps
+UPDATE public.users 
+SET created_at = now(), updated_at = now() 
+WHERE created_at IS NULL OR updated_at IS NULL;
+
+-- ============================================================================
+-- 6. CREATE UPDATED_AT TRIGGER
 -- ============================================================================
 
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -55,7 +68,7 @@ CREATE TRIGGER update_users_updated_at
     EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================================================
--- 6. VERIFICATION QUERIES
+-- 7. VERIFICATION QUERIES
 -- ============================================================================
 
 -- Check table structure
@@ -85,7 +98,7 @@ FROM pg_tables
 WHERE tablename = 'users' AND schemaname = 'public';
 
 -- ============================================================================
--- 7. TEST THE SETUP
+-- 8. TEST THE SETUP
 -- ============================================================================
 
 -- Insert test user
