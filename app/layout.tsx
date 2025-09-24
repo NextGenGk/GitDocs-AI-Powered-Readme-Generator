@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.gitdocs.xyz'),
   title: {
-    default: "GitDocs - AI-Powered README Generator for GitHub Repositories",
-    template: "%s | GitDocs - AI README Generator"
+    default: "GitDocs - Free AI-Powered README Generator for GitHub Repositories",
+    template: "%s | GitDocs - Free AI README Generator"
   },
   description:
-    "Generate professional README.md files for your GitHub repositories in seconds using AI. Create comprehensive documentation with installation guides, usage examples, and API docs automatically. Free tool for developers.",
+    "Generate professional README.md files for your GitHub repositories in seconds using AI. Free tool for developers to create comprehensive documentation with installation guides, usage examples, and API docs automatically.",
   keywords: [
     "README generator",
     "GitHub documentation",
@@ -66,15 +66,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://www.gitdocs.xyz",
-    title: "GitDocs - AI-Powered README Generator for GitHub",
-    description: "Generate professional README.md files for your GitHub repositories in seconds using AI. Free tool for developers to create comprehensive documentation automatically.",
+    title: "GitDocs - Free AI-Powered README Generator",
+    description: "Generate professional README.md files for your GitHub repositories in seconds using AI. Free tool for developers.",
     siteName: "GitDocs",
     images: [
       {
-        url: "https://www.gitdocs.xyz/gitdocs.png",
+        url: "https://www.gitdocs.xyz/og-home.png",
         width: 1200,
         height: 630,
-        alt: "GitDocs - AI-Powered README Generator",
+        alt: "GitDocs - Free AI-Powered README Generator",
         type: "image/png",
       },
     ],
@@ -83,9 +83,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@gitdocs",
     creator: "@gitdocs",
-    title: "GitDocs - AI-Powered README Generator",
+    title: "GitDocs - Free AI-Powered README Generator",
     description: "Generate professional README.md files for your GitHub repositories in seconds using AI. Free tool for developers.",
-    images: ["https://www.gitdocs.xyz/gitdocs.png"],
+    images: ["https://www.gitdocs.xyz/twitter-home.png"],
   },
   alternates: {
     canonical: "https://www.gitdocs.xyz",
