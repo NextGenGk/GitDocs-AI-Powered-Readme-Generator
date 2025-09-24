@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.gitdocs.xyz'),
   title: {
     default: "GitDocs - AI-Powered README Generator for GitHub Repositories",
     template: "%s | GitDocs - AI README Generator"
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
     "open source documentation",
     "software documentation"
   ],
-  authors: [{ name: "GitDocs Team", url: "https://gitdocs.vercel.app" }],
+  authors: [{ name: "GitDocs Team", url: "https://www.gitdocs.xyz" }],
   creator: "GitDocs",
   publisher: "GitDocs",
   category: "Developer Tools",
@@ -64,13 +65,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://gitdocs.vercel.app",
+    url: "https://www.gitdocs.xyz",
     title: "GitDocs - AI-Powered README Generator for GitHub",
     description: "Generate professional README.md files for your GitHub repositories in seconds using AI. Free tool for developers to create comprehensive documentation automatically.",
     siteName: "GitDocs",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://www.gitdocs.xyz/og-image.png",
         width: 1200,
         height: 630,
         alt: "GitDocs - AI-Powered README Generator",
@@ -87,7 +88,7 @@ export const metadata: Metadata = {
     images: ["/twitter-image.png"],
   },
   alternates: {
-    canonical: "https://gitdocs.vercel.app",
+    canonical: "https://www.gitdocs.xyz",
   },
   verification: {
     google: "your-google-verification-code",
@@ -118,7 +119,7 @@ export default function RootLayout({
     "@type": "WebApplication",
     "name": "GitDocs",
     "description": "AI-Powered README Generator for GitHub Repositories",
-    "url": "https://gitdocs.vercel.app",
+    "url": "https://www.gitdocs.xyz",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Web Browser",
     "offers": {
@@ -137,7 +138,7 @@ export default function RootLayout({
       "Markdown formatting",
       "Professional templates"
     ],
-    "screenshot": "https://gitdocs.vercel.app/screenshot.png",
+    "screenshot": "https://www.gitdocs.xyz/screenshot.png",
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.8",
