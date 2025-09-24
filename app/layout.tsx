@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     siteName: "GitDocs",
     images: [
       {
-        url: "https://www.gitdocs.xyz/og-image.png",
+        url: "https://www.gitdocs.xyz/gitdocs.png",
         width: 1200,
         height: 630,
         alt: "GitDocs - AI-Powered README Generator",
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
     creator: "@gitdocs",
     title: "GitDocs - AI-Powered README Generator",
     description: "Generate professional README.md files for your GitHub repositories in seconds using AI. Free tool for developers.",
-    images: ["/twitter-image.png"],
+    images: ["https://www.gitdocs.xyz/gitdocs.png"],
   },
   alternates: {
     canonical: "https://www.gitdocs.xyz",
